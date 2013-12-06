@@ -1,3 +1,16 @@
+#output
+out/
+rst
+rst1
+rub
+lnf
+mlc
+*.out
+lnf
+
+#python
+*.pyc
+
 # Object files
 *.o
 *.ko
