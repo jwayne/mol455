@@ -29,3 +29,6 @@ lnf
 *.exe
 *.out
 *.app
+
+# Compiled codeml
+paml4.7a/src/codeml

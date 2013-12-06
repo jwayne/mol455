@@ -1,0 +1,5 @@
+#!/bin/bash
+cd paml4.7a/src/
+make codeml
+cd ../..
+cp paml4.7a/src/codeml bin/codeml
