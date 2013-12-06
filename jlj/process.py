@@ -71,7 +71,7 @@ def run_codeml(fname_ctl):
 if __name__ == "__main__":
     # take protein aln file in CSA format from caprasingh08 dataset
     parser = argparse.ArgumentParser(description="produce dn/ds output from simple aln file")
-    parser.add_argument('-n', dest='n_bootstrap', type=int, default=1
+    parser.add_argument('-n', dest='n_bootstrap', type=int, default=1,
         help="number of bootstrapped trees")
     parser.add_argument('fname_aln')
     args = parser.parse_args()
