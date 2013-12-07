@@ -32,3 +32,4 @@ lnf
 
 # Compiled codeml
 paml4.7a/src/codeml
+data/
