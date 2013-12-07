@@ -1,9 +1,13 @@
+#!/bin/python
+
 import argparse
 import os
 import sys
+from Bio import Entrez
 from Bio import SeqIO
 
 
+Entrez.email = "ldiao@princeton.edu"
 def fetch_nuc(fname_aln):
     """
     PREPROCESSING
@@ -13,6 +17,12 @@ def fetch_nuc(fname_aln):
         fname_nuc = nucleotides for each sequence in the protein alignment
     """
     sys.stderr.write("\nSTEP: fetch_nuc(%s)\n" % fname_aln)
+
+	with open(fname_aln, 'r') as f:
+		for seq in SeqIO.parse(f, 'clustal'):
+			
+	
+
     return fname_nuc
 
 
