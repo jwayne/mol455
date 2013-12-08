@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    
+<commandSetRoot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				xsi:schemaLocation='commandSet.xsd'>
+    <commandSet type="serial">
+        <name>My Iterative Flow</name>
+        <configMapId>1</configMapId>
+        <commandSet type="parallel">
+            <configMapId>1.1</configMapId>
+            <name>MySubflow</name>
+            <config>
+                <param>
+                    <key>template</key>
+                    <value>subworkflow_template.xml</value>
+                </param>
+            </config>
+        </commandSet>
+    </commandSet> <!-- End top level command set -->
+</commandSetRoot> <!-- End of root -->

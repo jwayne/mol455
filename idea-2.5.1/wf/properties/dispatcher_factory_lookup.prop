@@ -1,0 +1,6 @@
+serial = org.tigr.workflow.common.LocalDispatcher
+parallel = org.tigr.workflow.common.LocalDispatcher
+distributed-serial = org.tigr.workflow.common.DistributedDispatcher
+distributed-parallel = org.tigr.workflow.common.DistributedDispatcher
+remote-serial = org.tigr.workflow.common.RemoteDispatcher
+remote-parallel = org.tigr.workflow.common.RemoteDispatcher

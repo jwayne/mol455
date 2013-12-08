@@ -1,0 +1,12 @@
+#!/usr/local/bin/perl
+
+$days = shift(@ARGV);
+unless (defined($days)){
+    die "Usage:  delete-old-event-logs <minimum age in days>\n";
+}
+$eventLogDir = <MOCK_SERVER_BASE>;
+chdir($eventLogDir)
+    or die "The directory $eventLogDir could not be entered.\n";
+$command = "find * -mtime +$days | xargs rm -rf 2>&dev/null";
+system($command)
+    and die "Error executing command:  [$command]\n";

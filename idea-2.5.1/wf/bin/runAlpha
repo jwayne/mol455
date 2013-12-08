@@ -1,0 +1,11 @@
+#! /bin/sh
+
+command=$1
+shift
+
+eval $*
+ret=$?
+
+echo $ret > "$command.retval"
+
+exit $ret

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<commandSetRoot type="template">
+    <commandSet type="remote-serial">
+        <name>Subflow</name>
+        <comment>Remote serial subflow</comment>
+        <id>0</id>
+        <maxParallelCmds>0</maxParallelCmds>
+        <configMapId>1.1</configMapId>
+        <command>
+            <name>Sleep</name>
+            <comment>Do nothing</comment>
+            <id>0</id>
+            <configMapId>1.1.1</configMapId>
+            <config>
+                <requiredArgCount>0</requiredArgCount>
+                <requiredParams/>
+                <optionalParams/>
+            </config>
+            <type>MediumTestCommand</type>
+            <retryCount>0</retryCount>
+            <retryAttempts>0</retryAttempts>
+            <timeOut>0</timeOut>
+        </command>
+        <restarted>false</restarted>
+    </commandSet>
+    <port>0</port>
+</commandSetRoot>

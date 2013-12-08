@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<commandSetRoot type="instance">
+    <commandSet type="serial" version="2.2">
+        <name>My Iterative Flow</name>
+        <id>224467</id>
+        <configMapId>1</configMapId>
+        <state>incomplete</state>
+        <commandSet type="serial" version="2.2">
+            <name>MySubflow</name>
+            <id>224468</id>
+            <configMapId>1.1</configMapId>
+            <fileName>iter_subworkflow.xml</fileName>
+            <parentFileName>iterative_instance_delay_subflow_build.xml</parentFileName>
+            <state>incomplete</state>
+            <config>
+                <param>
+                    <key>template</key>
+                    <value>subworkflow_template.xml</value>
+                </param>
+                <param>
+                    <key>configfile</key>
+                    <value>subworkflow_config.ini</value>
+                </param>
+            </config>
+          <restarted>false</restarted>
+        </commandSet>
+        <commandSet type="serial" version="2.2">
+            <name>MySubflow</name>
+            <id>224469</id>
+            <configMapId>1.1</configMapId>
+            <fileName>iter_subworkflow1.xml</fileName>
+            <parentFileName>iterative_instance_delay_subflow_build.xml</parentFileName>
+            <state>incomplete</state>
+            <config>
+                <param>
+                    <key>template</key>
+                    <value>subworkflow_template.xml</value>
+                </param>
+                <param>
+                    <key>configfile</key>
+                    <value>subworkflow_config.ini</value>
+                </param>
+            </config>
+          <restarted>false</restarted>
+        </commandSet>
+      <restarted>false</restarted>
+    </commandSet>
+    <host>aegan-lx</host>
+<port>-1</port>
+</commandSetRoot>

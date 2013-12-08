@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<commandSetRoot>
+    <commandSet type="parallel" version="2.1">
+        <name>Test Interrupt Workflow </name>
+        <id>1510</id>
+        <configMapId>2</configMapId>
+        <startTime>2003-11-13T15:18:49.174-05:00</startTime>
+        <state>incomplete</state>
+        <status>
+            <complete>0</complete>
+            <incomplete>1</incomplete>
+            <failed>0</failed>
+            <errors>0</errors>
+            <running>0</running>
+            <waiting>0</waiting>
+            <interrupted>0</interrupted>
+            <message></message>
+        </status>
+        <commandSet type="parallel" version="2.1">
+            <name>Top level CommandSet of Parent</name>
+            <id>1515</id>
+            <configMapId>1</configMapId>
+            <startTime>2003-11-13T15:18:53.486-05:00</startTime>
+            <state>incomplete</state>
+            <status>
+                <complete>0</complete>
+                <incomplete>1</incomplete>
+                <failed>0</failed>
+                <errors>0</errors>
+                <running>0</running>
+                <waiting>0</waiting>
+                <interrupted>0</interrupted>
+                <message></message>
+            </status>
+            <commandSet type="parallel" version="2.1">
+                <name>Distributed Subflow</name>
+                <fileName>sf2.xml</fileName>
+                <id>1524</id>
+                <configMapId>1.1</configMapId>
+                <parentFileName>master.xml</parentFileName>
+                <startTime>2003-11-13T15:18:54.274-05:00</startTime>
+                <endTime>2003-11-13T15:20:17.560-05:00</endTime>
+                <state>incomplete</state>
+              <restarted>false</restarted>
+            </commandSet>
+    	  <restarted>false</restarted>
+    	</commandSet>
+      <restarted>false</restarted>
+    </commandSet>
+    <host>aegan-lx</host>
+<port>-1</port>
+</commandSetRoot>

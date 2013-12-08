@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<commandSetRoot type="instance">
+    <commandSet type="serial" version="3.0">
+        <name>SimpleRemoteParallelSet</name>
+        <comment>A simple workflow with a remote parallel set</comment>
+        <id>7175</id>
+        <maxParallelCmds>0</maxParallelCmds>
+        <configMapId>1</configMapId>
+        <startTime>2006-08-24T10:03:55.947-04:00</startTime>
+        <endTime>2006-08-24T10:06:13.370-04:00</endTime>
+        <state>complete</state>
+        <status>
+            <total>1</total>
+            <complete>1</complete>
+            <incomplete>0</incomplete>
+            <failed>0</failed>
+            <pending>0</pending>
+            <errors>0</errors>
+            <running>0</running>
+            <waiting>0</waiting>
+            <interrupted>0</interrupted>
+            <message>Command set with name: &apos;SimpleRemoteParallelSet&apos; finished</message>
+        </status>
+        <commandSet type="remote-parallel" version="3.0">
+            <name>Subflow</name>
+            <comment>Remote parallel subflow</comment>
+            <id>7176</id>
+            <maxParallelCmds>700</maxParallelCmds>
+            <configMapId>1.1</configMapId>
+            <fileName>simple_remote_parallel_subflow.xml</fileName>
+            <startTime>2006-08-24T10:03:56.189-04:00</startTime>
+            <endTime>2006-08-24T10:06:13.142-04:00</endTime>
+            <state>complete</state>
+            <config>
+                <param>
+                    <key>template</key>
+                    <value>simple_remote_parallel_subflow_templ.xml</value>
+                </param>
+                <param>
+                    <key>configfile</key>
+                    <value>simple_remote_parallel_subflow_templ.ini</value>
+                </param>
+                <requiredArgCount>0</requiredArgCount>
+                <requiredParams/>
+                <optionalParams/>
+            </config>
+            <status>
+                <total>2</total>
+                <complete>2</complete>
+                <incomplete>0</incomplete>
+                <failed>0</failed>
+                <pending>0</pending>
+                <errors>0</errors>
+                <running>0</running>
+                <waiting>0</waiting>
+                <interrupted>0</interrupted>
+                <message>Command set with name: &apos;Subflow&apos; finished</message>
+            </status>
+            <dceSpec type="sge">
+                <jobID>1726280</jobID>
+                <executionHost>hyperion.tigr.org</executionHost>
+                <log></log>
+                <group>Assembly</group>
+                <runtime>0</runtime>
+                <evictable>true</evictable>
+                <duration>medium</duration>
+                <priority>low</priority>
+                <reqStartTime>2006-08-24T10:06:12.000-04:00</reqStartTime>
+                <gridID>0</gridID>
+            </dceSpec>
+            <restarted>false</restarted>
+        </commandSet>
+        <restarted>false</restarted>
+    </commandSet>
+    <host>amahurka-lx</host>
+    <port>1099</port>
+</commandSetRoot>

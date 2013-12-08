@@ -1,0 +1,297 @@
+<?xml version="1.0"?>
+	<!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Object Mapping DTD Version 1.0//EN"
+	"http://castor.exolab.org/mapping.dtd">
+
+	<mapping>
+		<description> Mapping file for Workflow system </description>
+
+		<class name = "org.tigr.workflow.mapping.CommandSetRoot">
+			<map-to xml="commandSetRoot"/>
+			<field name="CommandSet" type="org.tigr.workflow.mapping.CommandSet">
+				<bind-xml name="commandSet" node="element"/>
+			</field>
+			<field name="Type" type="java.lang.String" required="false">
+				<bind-xml name="type" node="attribute"/>
+			</field>
+			<field name="Host" type="java.lang.String" required="false">
+				<bind-xml name="host" node="element"/>
+			</field>
+			<field name="Port" type="integer" required="false">
+				<bind-xml name="port" node="element"/>
+			</field>
+		</class>
+
+		<class name = "org.tigr.workflow.mapping.CommandSet" auto-complete="false">
+			<map-to xml="commandSet"/>
+			<field name="Name" type="java.lang.String" required="true">
+				<bind-xml name="name" node="element"/>
+			</field>
+			<field name="Comment" type="java.lang.String" required="false">
+				<bind-xml name="comment" node="element"/>
+			</field>
+			<field name="ID" type="long" required="true"> 
+				<bind-xml name="id" node="element"/>
+			</field>
+			<field name="MaxParallelCmds" type="integer" required="false">
+				<bind-xml name="maxParallelCmds" node="element"/>
+			</field>
+                       <field name="LastMarshalTime" type="java.util.Date" required="false">
+                               <bind-xml name="lastMarshalTime" node="element"/>
+                       </field>
+                       <field name="MarshalInterval" type="integer" required="false">
+                               <bind-xml name="marshalInterval" node="element"/>
+                       </field>
+			<field name="ConfigMapID" type="java.lang.String"> 
+				<bind-xml name="configMapId" node="element"/>
+			</field>
+			<field name="FileName" type="java.lang.String">
+				<bind-xml name="fileName" node="element"/>
+			</field>
+			<field name="ParentFileName" type="java.lang.String">
+				<bind-xml name="parentFileName" node="element"/>
+			</field>
+			<field name="StartTime" type="java.util.Date"> 
+				<bind-xml name="startTime" node="element"/>
+			</field>
+			<field name="EndTime" type="java.util.Date"> 
+				<bind-xml name="endTime" node="element"/>
+			</field>
+			<field name="State" type="java.lang.String"> 
+				<bind-xml name="state" node="element"/>
+			</field>
+			<field name="WaitUntil" type="java.util.Date"> 
+				<bind-xml name="waitUntil" node="element"/>
+			</field>
+			<field name="Config" type="org.tigr.workflow.mapping.Config">
+				<bind-xml name="config" node="element"/>
+			</field>
+			<field name="CommandSetStatus" type="org.tigr.workflow.mapping.CommandSetStatus">
+				<bind-xml name="status" node="element"/>
+			</field>
+			<field name="DCESpecification" type="org.tigr.workflow.mapping.DCESpecification">
+				<bind-xml name="dceSpec" node="element"/>
+			</field>
+			<field name="CommandList" type="org.tigr.workflow.mapping.IBaseCommand" collection="vector">
+				<bind-xml auto-naming="deriveByClass" node="element"/>
+			</field>
+			<field name="Type" type="java.lang.String" required="true">
+				<bind-xml name="type" node="attribute"/>
+			</field>
+			<field name="Version" type="java.lang.String" required="false">
+				<bind-xml name="version" node="attribute"/>
+			</field>
+			<field name="Restarted" type="boolean" required="false">
+				<bind-xml name="restarted" node="element"/>
+			</field>
+		</class>
+
+		<class name="org.tigr.workflow.mapping.Config">
+			<field name="ConfigFile" type="java.lang.String">
+				<bind-xml name="filePath" node="element"/>
+			</field>
+			<field name="ParamList" type="org.tigr.workflow.mapping.Param" collection="vector">
+				<bind-xml name="param" node="element"/>
+			</field>
+			<field name="RequiredArgCount" type="integer"> 
+				<bind-xml name="requiredArgCount" node="element"/>
+			</field>
+			<field name="RequiredParams" type="org.tigr.workflow.mapping.ParamDef" collection="vector">
+				<bind-xml name="paramDef" location="requiredParams" node="element"/>
+			</field>
+			<field name="OptionalParams" type="org.tigr.workflow.mapping.ParamDef" collection="vector">
+				<bind-xml name="paramDef" location="optionalParams" node="element"/>
+			</field>
+		</class>
+
+		<class name="org.tigr.workflow.mapping.CommandSetStatus">
+			<field name="Total" type="integer"> 
+				<bind-xml name="total" node="element"/>
+			</field>
+			<field name="Complete" type="integer"> 
+				<bind-xml name="complete" node="element"/>
+			</field>
+			<field name="Incomplete" type="integer"> 
+				<bind-xml name="incomplete" node="element"/>
+			</field>
+			<field name="Failed" type="integer"> 
+				<bind-xml name="failed" node="element"/>
+			</field>
+			<field name="Pending" type="integer"> 
+				<bind-xml name="pending" node="element"/>
+			</field>
+			<field name="Errors" type="integer"> 
+				<bind-xml name="errors" node="element"/>
+			</field>
+			<field name="Running" type="integer"> 
+				<bind-xml name="running" node="element"/>
+			</field>
+			<field name="Waiting" type="integer"> 
+				<bind-xml name="waiting" node="element"/>
+			</field>
+			<field name="Interrupted" type="integer"> 
+				<bind-xml name="interrupted" node="element"/>
+			</field>
+			<field name="Message" type="java.lang.String"> 
+				<bind-xml name="message" node="element"/>
+			</field>
+		</class>
+
+		<class name="org.tigr.workflow.mapping.Param">
+			<field name="Key" type="java.lang.String"> 
+				<bind-xml name="key" node="element"/>
+			</field>
+			<field name="Value" type="java.lang.String"> 
+				<bind-xml name="value" node="element"/>
+			</field>
+		</class>
+
+		<class name="org.tigr.workflow.mapping.ParamDef">
+			<field name="Name" type="java.lang.String"> 
+				<bind-xml name="name" node="element"/>
+			</field>
+			<field name="Comment" type="java.lang.String"> 
+				<bind-xml name="comment" node="element"/>
+			</field>
+		</class>
+
+		<class name = "org.tigr.workflow.mapping.Command">
+			<field name="Name" type="java.lang.String" required="true">
+				<bind-xml name="name" node="element"/>
+			</field>
+			<field name="Comment" type="java.lang.String" required="false">
+				<bind-xml name="comment" node="element"/>
+			</field>
+			<field name="ID" type="long"> 
+				<bind-xml name="id" node="element"/>
+			</field>
+			<field name="ConfigMapID" type="java.lang.String"> 
+				<bind-xml name="configMapId" node="element"/>
+			</field>
+			<field name="Config" type="org.tigr.workflow.mapping.Config">
+				<bind-xml name="config" node="element"/>
+			</field>
+			<field name="StartTime" type="java.util.Date"> 
+				<bind-xml name="startTime" node="element"/>
+			</field>
+			<field name="EndTime" type="java.util.Date"> 
+				<bind-xml name="endTime" node="element"/>
+			</field>
+			<field name="State" type="java.lang.String"> 
+				<bind-xml name="state" node="element"/>
+			</field>
+			<field name="WaitUntil" type="java.util.Date"> 
+				<bind-xml name="waitUntil" node="element"/>
+			</field>
+			<field name="Type" type="java.lang.String">
+				<bind-xml name="type" node="element"/>
+			</field>
+			<field name="Executable" type="java.lang.String">
+				<bind-xml name="executable" node="element"/>
+			</field>
+			<field name="RetryCount" type="integer">
+				<bind-xml name="retryCount" node="element"/>
+			</field>			
+			<field name="RetryAttempts" type="integer">
+				<bind-xml name="retryAttempts" node="element"/>
+			</field>
+			<field name="TimeOut" type="integer">
+				<bind-xml name="timeOut" node="element"/>
+			</field>
+			<field name="CommandStatus" type="org.tigr.workflow.mapping.CommandStatus">
+				<bind-xml name="status" node="element"/>
+			</field>
+			<field name="ParamList" type="org.tigr.workflow.mapping.Param" collection="vector">
+				<bind-xml name="param" node="element"/>
+			</field>
+			<field name="FlagList" type="java.lang.String" collection="vector">
+				<bind-xml name="flag" node="element"/>
+			</field>
+			<field name="ArgList" type="java.lang.String" collection="vector">
+				<bind-xml name="arg" node="element"/>
+			</field>
+			<field name="DCESpecification" type="org.tigr.workflow.mapping.DCESpecification">
+				<bind-xml name="dceSpec" node="element"/>
+			</field>
+		</class>
+
+		<class name="org.tigr.workflow.mapping.CommandStatus">
+			<field name="RetValue" type="integer"> 
+				<bind-xml name="retValue" node="element"/>
+			</field>
+			<field name="Message" type="java.lang.String"> 
+				<bind-xml name="message" node="element"/>
+			</field>
+		</class>
+
+		<class name="org.tigr.workflow.mapping.ExecEnvironment">
+			<field name="EnvFile" type="java.lang.String"> 
+				<bind-xml name="envFile" node="element"/>
+			</field>
+			<field name="ParamList" type="org.tigr.workflow.mapping.Param" collection="vector">
+				<bind-xml name="param" node="element"/>
+			</field>
+		</class>
+
+		<class name = "org.tigr.workflow.mapping.DCESpecification">
+			<field name="JobID" type="java.lang.String" required="false">
+				<bind-xml name="jobID" node="element"/>
+			</field>
+			<field name="ExecutionHost" type="java.lang.String" required="false">
+				<bind-xml name="executionHost" node="element"/>
+			</field>
+			<field name="Log" type="java.lang.String" required="false">
+				<bind-xml name="log" node="element"/>
+			</field>
+			<field name="SpecFile" type="java.lang.String"> 
+				<bind-xml name="specFile" node="element"/>
+			</field>
+			<field name="Group" type="java.lang.String"> 
+				<bind-xml name="group" node="element"/>
+			</field>
+			<field name="Mail" type="java.lang.String"> 
+				<bind-xml name="mail" node="element"/>
+			</field>
+			<field name="OS" type="java.lang.String"> 
+				<bind-xml name="OS" node="element"/>
+			</field>
+			<field name="Memory" type="java.lang.String"> 
+				<bind-xml name="memory" node="element"/>
+			</field>
+                        <field name="Runtime" type="long">
+                                <bind-xml name="runtime" node="element"/>
+                        </field>
+                        <field name="Evictable" type="boolean">
+                                <bind-xml name="evictable" node="element"/>
+                        </field>
+			<field name="Queue" type="java.lang.String"> 
+				<bind-xml name="queue" node="element"/>
+			</field>
+			<field name="Hosts" type="java.lang.String"> 
+				<bind-xml name="hosts" node="element"/>
+			</field>
+			<field name="Duration" type="java.lang.String"> 
+				<bind-xml name="duration" node="element"/>
+			</field>
+			<field name="Priority" type="java.lang.String"> 
+				<bind-xml name="priority" node="element"/>
+			</field>
+			<field name="Passthrough" type="java.lang.String"> 
+				<bind-xml name="passthrough" node="element"/>
+			</field>
+			<field name="WorkingDir" type="java.lang.String"> 
+				<bind-xml name="workingDir" node="element"/>
+			</field>
+			<field name="ReqStartTime" type="java.util.Date"> 
+				<bind-xml name="reqStartTime" node="element"/>
+			</field>
+			<field name="GridID" type="long"> 
+				<bind-xml name="gridID" node="element"/>
+			</field>
+			<field name="ExecEnv" type="org.tigr.workflow.mapping.ExecEnvironment">
+				<bind-xml name="execEnv" node="element"/>
+			</field>
+			<field name="Type" type="java.lang.String" required="true">
+				<bind-xml name="type" node="attribute"/>
+			</field>
+		</class>
+	</mapping>

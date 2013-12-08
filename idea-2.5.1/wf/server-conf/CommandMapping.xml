@@ -1,0 +1,472 @@
+<?xml version="1.0"?>
+<!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Object Mapping DTD Version 1.0//EN"
+                         "http://castor.exolab.org/mapping.dtd">
+
+<mapping>
+
+
+    <class name="org.tigr.htc.cmd.CommandSetRoot" required="true">
+      <map-to xml="commandSetRoot" />
+
+        <field name="command" type="org.tigr.htc.cmd.ICommand" >
+          <bind-xml auto-naming="deriveByClass" node="element"/>
+        </field>
+
+    </class>
+
+    <class name="org.tigr.htc.cmd.CommandSet" >
+      <map-to xml="commandSet"/>
+
+        <field name="type" type="string" >
+            <bind-xml name="type" node="attribute" />
+        </field>
+
+        <field name="ID">
+            <bind-xml name="id" />
+        </field>
+
+        <field name="submitURL" type="string" required="false">
+           <bind-xml name="submitURL" node="element" />
+        </field>
+
+        <field name="userName" type="string" required="false">
+           <bind-xml name="username" node="element" />
+        </field>
+
+        <field name="group" type="string" required="false">
+           <bind-xml name="group" node="element" />
+        </field>
+
+        <field name="email" type="string" >
+           <bind-xml name="email" node="element" />
+        </field>
+
+        <field name="notifyScript" type="string" >
+           <bind-xml name="notifyScript" node="element" />
+        </field>
+
+        <field name="submitTime" type="long" >
+            <bind-xml name="submitTime" node="element" />
+        </field>
+
+        <field name="startTime" type="long" >
+            <bind-xml name="startTime" node="element" />
+        </field>
+
+        <field name="endTime" type="long" >
+            <bind-xml name="endTime" node="element" />
+        </field>
+
+        <field name="state" type="string" required="true" set-method="setState" get-method="getStateAsString" >
+            <bind-xml name="state" node="element" />
+        </field>
+
+        <field name="commands" type="org.tigr.htc.cmd.Command" collection="vector">
+          <bind-xml name="command" node="element"/>
+        </field>
+
+        <field name="status" type="org.tigr.htc.cmd.CommandSetStatus">
+            <bind-xml name="status" />
+        </field>
+
+    </class>    
+
+
+    <class name="org.tigr.htc.cmd.Command">
+
+        <map-to xml="command" />
+
+        <field name="command" type="string" required="true">
+           <bind-xml name="executable" node="element" />
+        </field>
+
+        <field name="name" type="string" >
+           <bind-xml name="name" node="element" />
+        </field>
+
+        <field name="email" type="string" >
+           <bind-xml name="email" node="element" />
+        </field>
+
+        <field name="notifyScript" type="string" >
+           <bind-xml name="notifyScript" node="element" />
+        </field>
+
+        <field name="submitURL" type="string" required="false">
+           <bind-xml name="submitURL" node="element" />
+        </field>
+
+        <field name="userName" type="string" required="true">
+           <bind-xml name="username" node="element" />
+        </field>
+
+        <field name="group" type="string" required="true">
+           <bind-xml name="group" node="element" />
+        </field>
+
+        <field name="type" type="string" required="true">
+           <bind-xml name="type" node="attribute" />
+        </field>
+
+        <field name="ID">
+            <bind-xml name="id" />
+        </field>
+
+        <field name="submitTime" type="long" >
+            <bind-xml name="submitTime" node="element" />
+        </field>
+
+        <field name="requestTime" type="long" >
+            <bind-xml name="requestTime" node="element" />
+        </field>
+
+        <field name="startTime" type="long" >
+            <bind-xml name="startTime" node="element" />
+        </field>
+
+        <field name="endTime" type="long" >
+            <bind-xml name="endTime" node="element" />
+        </field>
+
+        <field name="state" type="string" required="true" set-method="setState" get-method="getStateAsString" >
+            <bind-xml name="state" node="element" />
+        </field>
+
+        <field name="initialDir" type="string" >
+            <bind-xml name="initialDir" node="element" />
+        </field>
+
+        <field name="output" type="string" >
+            <bind-xml name="output" node="element" />
+        </field>
+
+        <field name="input" type="string" >
+            <bind-xml name="input" node="element" />
+        </field>
+
+        <field name="error" type="string" >
+            <bind-xml name="error" node="element" />
+        </field>
+
+        <field name="waitUntil" type="date" >
+            <bind-xml name="waitUntil" node="element" />
+        </field>
+
+        <field name="retryCount" type="integer" >
+            <bind-xml name="retryCount" node="element" />
+        </field>
+
+        <field name="times" type="integer" >
+            <bind-xml name="times" node="element" />
+        </field>
+
+        <field name="maxWorkers" type="integer" >
+            <bind-xml name="maxWorkers" node="element" />
+        </field>
+
+        <field name="config" type="org.tigr.htc.cmd.CommandConfig">
+            <bind-xml name="config" />
+        </field>
+
+        <field name="params" set-method="addParam" get-method="getParams" type="org.tigr.htc.cmd.Param" collection="arraylist">
+          <bind-xml name="param" node="element"/>
+        </field>
+
+        <field name="status" type="org.tigr.htc.cmd.CommandStatus">
+            <bind-xml name="status" />
+        </field>
+
+        <field name="gridJobID" type="string" >
+            <bind-xml name="gridJobID" node="element" />
+        </field>
+
+    </class>
+
+
+    <class name="org.tigr.htc.cmd.CommandConfig" auto-complete="false">
+
+        <map-to xml="config" />
+
+        <field name="cmdClass" type="string" >
+            <bind-xml name="class" node="element" />
+        </field>
+
+        <field name="OpSys" type="string" >
+            <bind-xml name="opSys" node="element" />
+        </field>
+
+        <field name="hosts" type="string" >
+            <bind-xml name="hosts" node="element" />
+        </field>
+
+        <field name="passThrough" type="string" >
+            <bind-xml name="passThrough" node="element" />
+        </field>
+
+        <field name="logLocation" type="string" >
+            <bind-xml name="logLocation" node="element" />
+        </field>
+
+        <field name="length" type="string" >
+            <bind-xml name="length" node="element" />
+        </field>
+
+        <field name="memory" type="integer" >
+            <bind-xml name="memory" node="element" />
+        </field>
+
+        <field name="priority" type="integer" >
+            <bind-xml name="priority" node="element" />
+        </field>
+
+        <field name="getenv" type="boolean" >
+            <bind-xml name="getenv" node="element" />
+        </field>
+
+        <field name="evictable" type="boolean" >
+            <bind-xml name="evictable" node="element" />
+        </field>
+
+        <!-- The runningTime is expressed in minutes -->
+        <field name="runningTime" type="long" >
+            <bind-xml name="runningTime" node="element" />
+        </field>
+    </class>
+
+    <class name="org.tigr.htc.cmd.CommandStatus" auto-complete="false">
+
+        <map-to xml="status" />
+
+        <field name="message" type="string">
+            <bind-xml name="message" node="element" />
+        </field>
+
+        <field name="errors" type="integer">
+            <bind-xml name="errors" node="element" />
+        </field>
+
+        <field name="running" type="integer">
+            <bind-xml name="running" node="element" />
+        </field>
+
+        <field name="completed" type="integer">
+            <bind-xml name="completed" node="element" />
+        </field>
+
+        <field name="waiting" type="integer">
+            <bind-xml name="waiting" node="element" />
+        </field>
+
+        <field name="returnValue" type="integer">
+            <bind-xml name="returnValue" />
+        </field>
+
+    </class>
+
+
+    <class name="org.tigr.htc.cmd.CommandSetStatus" auto-complete="false">
+
+        <map-to xml="status" />
+
+        <field name="message" type="string">
+            <bind-xml name="message" node="element" />
+        </field>
+
+        <field name="errors" type="integer">
+            <bind-xml name="errors" node="element" />
+        </field>
+
+        <field name="running" type="integer">
+            <bind-xml name="running" node="element" />
+        </field>
+
+        <field name="completed" type="integer">
+            <bind-xml name="completed" node="element" />
+        </field>
+
+        <field name="waiting" type="integer">
+            <bind-xml name="waiting" node="element" />
+        </field>
+
+        <field name="returnValue" type="integer">
+            <bind-xml name="returnValue" />
+        </field>
+
+    </class>
+
+
+    <class name="org.tigr.htc.cmd.Param" auto-complete="false" >
+
+        <map-to xml="param" />
+
+        <field name="type" type="string" required="true" set-method="setType" get-method="getTypeAsString" >
+           <bind-xml name="type" node="attribute" />
+        </field>
+
+        <field name="key" type="string" >
+            <bind-xml name="key" node="element" />
+        </field>
+
+        <field name="value" type="string" required="true">
+            <bind-xml name="value" node="element"/>
+        </field>
+
+    </class>
+<!--
+    <class name="org.tigr.antware.shared.command.events.SubmitEvent" auto-complete="false">
+
+        <map-to xml="SubmitEvent" />
+
+        <field name="commandID" type="long">
+            <bind-xml name="commandID" node="element" />
+        </field>
+
+        <field name="user" type="string">
+            <bind-xml name="user" node="element" />
+        </field>
+
+        <field name="description" type="string">
+            <bind-xml name="description" node="element" />
+        </field>
+
+        <field name="date" type="date">
+            <bind-xml name="date" node="element" />
+        </field>
+
+    </class>
+
+
+    <class name="org.tigr.antware.shared.command.events.StartEvent" auto-complete="false">
+
+        <map-to xml="StartEvent" />
+
+        <field name="commandID" type="long">
+            <bind-xml name="commandID" node="element" />
+        </field>
+
+        <field name="user" type="string">
+            <bind-xml name="user" node="element" />
+        </field>
+
+        <field name="description" type="string">
+            <bind-xml name="description" node="element" />
+        </field>
+
+        <field name="date" type="date">
+            <bind-xml name="date" node="element" />
+        </field>
+
+    </class>
+
+    <class name="org.tigr.antware.shared.command.events.ResumeEvent" auto-complete="false">
+
+        <map-to xml="ResumeEvent" />
+
+        <field name="commandID" type="long">
+            <bind-xml name="commandID" node="element" />
+        </field>
+
+        <field name="user" type="string">
+            <bind-xml name="user" node="element" />
+        </field>
+
+        <field name="description" type="string">
+            <bind-xml name="description" node="element" />
+        </field>
+
+        <field name="date" type="date">
+            <bind-xml name="date" node="element" />
+        </field>
+
+    </class>
+
+    <class name="org.tigr.antware.shared.command.events.FinishEvent" auto-complete="false">
+
+        <map-to xml="FinishEvent" />
+
+        <field name="commandID" type="long">
+            <bind-xml name="commandID" node="element" />
+        </field>
+
+        <field name="returnValue" type="integer">
+            <bind-xml name="returnValue" node="element" />
+        </field>
+
+        <field name="message" type="string">
+            <bind-xml name="message" node="element" />
+        </field>
+
+        <field name="description" type="string">
+            <bind-xml name="description" node="element" />
+        </field>
+
+        <field name="date" type="date">
+            <bind-xml name="date" node="element" />
+        </field>
+
+    </class>
+
+    <class name="org.tigr.antware.shared.command.events.InterruptEvent" auto-complete="false">
+
+        <map-to xml="InterruptEvent" />
+
+        <field name="commandID" type="long">
+            <bind-xml name="commandID" node="element" />
+        </field>
+
+        <field name="interrupt" type="string">
+            <bind-xml name="interrupt" node="element" />
+        </field>
+
+        <field name="description" type="string">
+            <bind-xml name="description" node="element" />
+        </field>
+
+        <field name="date" type="date">
+            <bind-xml name="date" node="element" />
+        </field>
+
+    </class>
+-->
+    <class name="org.tigr.htc.cmd.TaskGroup" >
+      <map-to xml="taskGroup"/>
+    
+        <field name="CmdId">
+            <bind-xml name="htcID" />
+        </field>
+
+        <field name="tasks" type="org.tigr.htc.cmd.Task" collection="vector">
+          <bind-xml name="task" node="element"/>
+        </field>
+
+    </class>    
+
+    <class name="org.tigr.htc.cmd.Task">
+
+        <map-to xml="task" />
+
+        <field name="index" type="integer" required="true" >
+            <bind-xml name="index" node="element" />
+        </field>
+
+        <field name="state" type="string" required="true" set-method="setState" get-method="getStateAsString" >
+            <bind-xml name="state" node="element" />
+        </field>
+
+        <field name="returnValue" type="integer"  required="true">
+            <bind-xml name="returnValue" node="element" />
+        </field>
+
+        <field name="param" type="string" required="true">
+           <bind-xml name="param" node="element" />
+        </field>
+
+        <field name="message" type="string" required="true">
+           <bind-xml name="message" node="element" />
+        </field>
+
+    </class>
+</mapping>
+
+                    
+

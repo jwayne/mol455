@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<commandSetRoot type="instance">
+    <commandSet type="serial" version="2.2">
+        <name>simple serial</name>
+        <id>36187</id>
+        <configMapId>1</configMapId>
+        <startTime>2003-06-13T15:08:01.821-04:00</startTime>
+        <state>incomplete</state>
+        <command>
+            <name>TestCommand</name>
+            <id>36188</id>
+            <configMapId>1.1</configMapId>
+            <state>incomplete</state>
+            <retryCount>0</retryCount>
+            <retryAttempts>0</retryAttempts>
+            <timeOut>0</timeOut>
+            <param>
+                <key>pkey1</key>
+                <value>pval1</value>
+            </param>
+        </command>
+        <command>
+            <name>TestCommand</name>
+            <id>36189</id>
+            <configMapId>1.3</configMapId>
+            <state>incomplete</state>
+            <retryCount>0</retryCount>
+            <retryAttempts>0</retryAttempts>
+            <timeOut>0</timeOut>
+            <param>
+                <key>pkey</key>
+                <value>pvalue</value>
+            </param>
+        </command>
+      <restarted>false</restarted>
+    </commandSet>
+    <host>aegan-lx</host>
+<port>-1</port>
+</commandSetRoot>

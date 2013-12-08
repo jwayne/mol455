@@ -1,0 +1,8 @@
+RunPerlUnixCommand=org.tigr.workflow.common.SystemCommandProcessor
+RunUnixCommand=org.tigr.workflow.common.JavaSystemCommandProcessor
+RunJavaUnixCommand=org.tigr.workflow.common.JavaSystemCommandProcessor
+RunDistributedCommand=org.tigr.workflow.common.DistributedProcessor
+DistributedCommand=org.tigr.workflow.common.DistributedProcessor
+Wait=org.tigr.workflow.common.processors.WaitProcessor
+WaitForFile=org.tigr.workflow.common.processors.WaitForFileCreationProcessor
+Sleep = org.tigr.workflow.processors.WaitProcessor

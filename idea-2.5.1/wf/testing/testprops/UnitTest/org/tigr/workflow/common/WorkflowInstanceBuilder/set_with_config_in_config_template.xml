@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    
+<commandSetRoot type="template" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				xsi:schemaLocation='commandSet.xsd'>
+    <commandSet type="serial">
+        <name>Template with Config</name>
+        <configMapId>1</configMapId>
+        <commandSet type="parallel">
+            <configMapId>1.1</configMapId>
+            <name>MySubflow</name>
+            <config>
+                <param>
+                    <key>template</key>
+                    <value>template.xml</value>
+                </param>
+                <param>
+                    <key>configfile</key>
+                    <value>config.ini</value>
+                </param>
+            </config>
+          <restarted>false</restarted>
+        </commandSet>
+      <restarted>false</restarted>
+    </commandSet> <!-- End top level command set -->
+</commandSetRoot> <!-- End of root -->

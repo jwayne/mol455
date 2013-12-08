@@ -1,0 +1,9 @@
+#!/bin/bash
+# This is a shell wrapper script that launches the command invoked by workflow
+# This hack is needed as SGE requires the invoked command to be a shell script
+# Hence when users rerun the same commands under SGE they would have to make no
+# changes to the workflow document
+
+# Invoke the command through the eval
+echo $*
+eval $*

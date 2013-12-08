@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    
+<commandSetRoot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				xsi:schemaLocation='commandSet.xsd'>
+    <commandSet type="serial">
+        <name>Unix Command Flow</name>
+        <configMapId>1</configMapId>
+        <commandSet type="parallel">
+            <configMapId>1.2</configMapId>
+            <name>Sub Workflow</name>
+            <command>
+              <name>IterCommand</name>
+              <configMapId>1.2.1</configMapId>
+            </command>
+        </commandSet>
+    </commandSet> <!-- End top level command set -->
+</commandSetRoot> <!-- End of root -->
