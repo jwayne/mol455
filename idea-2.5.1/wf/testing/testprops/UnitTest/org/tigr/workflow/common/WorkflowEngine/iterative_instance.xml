@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<commandSetRoot type="instance">
+    <commandSet type="serial" version="2.2">
+        <name>My Iterative Flow</name>
+        <id>224467</id>
+        <configMapId>1</configMapId>
+        <state>incomplete</state>
+        <commandSet type="parallel" version="2.2">
+            <name>MySubflow</name>
+            <fileName>iter_subflow.xml</fileName>
+            <id>224468</id>
+            <configMapId>1.1</configMapId>
+            <state>incomplete</state>
+          <restarted>false</restarted>
+        </commandSet>
+        <commandSet type="parallel" version="2.2">
+            <name>MySubflow</name>
+            <fileName>iter_subflow1.xml</fileName>
+            <id>224469</id>
+            <configMapId>1.1</configMapId>
+            <state>incomplete</state>
+          <restarted>false</restarted>
+        </commandSet>
+      <restarted>false</restarted>
+    </commandSet>
+    <host>aegan-lx</host>
+<port>-1</port>
+</commandSetRoot>

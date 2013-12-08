@@ -1,0 +1,4 @@
+RunUnixCommand = org.tigr.workflow.common.DistributedProcessor
+RunDistributedCommand = org.tigr.workflow.common.DistributedProcessor
+DummyDistributedCommand =  org.tigr.workflow.common.DistributedProcessor
+DistributedCommand =  org.tigr.workflow.common.DistributedProcessor

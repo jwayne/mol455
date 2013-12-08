@@ -1,0 +1,9 @@
+IDEA and its Workflow component are under the artistic license.
+
+Licenses for third-party software and incorporated components are described in the following files:
+
+Apache Batik			apache-batik/LICENSE
+Apache Commons IO		commons-io/commons-io-1.3.1/LICENSE.txt
+JDIC				jdic/jdic-2006-06-13-bin-cross-platform/COPYING
+JRuby				jruby/jruby-1.0.0RC1/COPYING
+PDFBox				pdfbox/PDFBox-0.7.2/licenses/pdfbox/LICENSE

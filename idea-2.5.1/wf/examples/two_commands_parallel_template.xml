@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    
+<commandSetRoot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				xsi:schemaLocation='commandSet.xsd'>
+	<commandSet type="parallel">
+		<name>Unix Command Flow</name>
+		<configMapId>1</configMapId>
+		<command>
+			<name>RunUnixCommand</name>
+			<configMapId>1.1</configMapId>
+		</command> <!-- End of command check updates -->
+		<command>
+			<name>RunUnixCommand</name>
+			<configMapId>1.2</configMapId>
+		</command> <!-- End of command check updates -->
+	</commandSet> <!-- End top level command set -->
+</commandSetRoot> <!-- End of root -->

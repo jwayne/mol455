@@ -1,0 +1,38 @@
+#!/usr/bin/perl
+
+$userJavaExecutable = "/usr/local/java/1.5.0/bin/java";
+unless (-e $userJavaExecutable){
+    $userJavaExecutable = `which java`;
+    chomp($userJavaExecutable);
+    unless ($userJavaExecutable){
+	die "Java is not installed on your system or could not be located.  IDEA requires Java 1.5 or higher.\n";
+    }
+    $javaVersion = `$userJavaExecutable -fullversion 2>&1` || `$userJavaExecutable -version 2&>1`;
+    @javaVersionSubparts = split(/\"/, $javaVersion);
+    if (scalar(@javaVersionSubparts) == 3){
+	$javaVersion = $javaVersionSubparts[1];
+    }
+    else{
+	$javaVersion = "";
+    }
+    if ($javaVersion){
+	($minorRevision, undef) = split(/\_/, $javaVersion);
+	@javaVersionSubparts = split(/\./, $minorRevision);
+	$majorRevision = "";
+	if (scalar(@javaVersionSubparts >= 2)){
+	    $majorRevision = "$javaVersionSubparts[0].$javaVersionSubparts[1]";
+	}
+	unless ($majorRevision =~ /[\d\.]+/){
+	    die("The Java version reported ($javaVersion) was not formatted as expected."
+		. "  IDEA requires Java 1.5 or higher.\n");
+	}
+	if ($majorRevision < 1.5){
+	    die "IDEA requires Java 1.5 or higher.  You are running Java $javaVersion.\n";
+	}
+    }
+    else{
+	print "Warning:  Your installation of Java could not report its version.  IDEA will attempt to continue, but it may fail.\n";
+	break;
+    }
+}
+print "$userJavaExecutable\n";

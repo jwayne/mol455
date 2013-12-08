@@ -1,0 +1,170 @@
+#!/usr/bin/perl -w
+# This script takes a multi-fasta query and database files and prefilters the
+# database file to create a mini database using the max-match matching program.
+#
+# <p>Copyright (C) 2001, The Institute for Genomic Research (TIGR).
+#
+# <p>All rights reserved.
+#
+# <pre>
+# $RCSfile: FilterSearchDB,v $
+# $Revision: 1.1 $
+# $Date: 2003/07/29 13:12:26 $
+# $Author: amahurka $
+# </pre>
+#
+
+use strict;
+use Getopt::Long;
+use Data::Dumper;
+use Log::Log4perl qw(:levels get_logger);
+use Carp;
+use FindBin qw ($Bin);
+unshift @INC, $Bin; # Add the location of the script to the perl search path
+require TIGR::Panda::FilterSearchDB;
+
+my $usage_msg = <<USAGE_INFO;
+Usage: FilterSearchDB --query=<query file> --db=<database file> --out=<output mini database file> 
+       --length=<word length (default 10)> --logconf=<logging configuration> --log_level=<log level>
+       --logfile=<log file name>
+USAGE_INFO
+
+my $help_msg = <<HELP_INFO;
+This script takes a multi-fasta query and database files and prefilters the
+database file to create a mini database using the max-match matching program.
+
+Usage: FilterSearchDB --query=<query file> --db=<database file> --out=<output mini database file> 
+       --length=<word length (default 10)> --logconf=<logging configuration> --log_level|debug=<log level>
+       --logfile=<log file name>
+
+Example: FilterSearchDB --query=MyTest.dat --db=MyTestDB.dat  --out=MiniMyTestDB.dat --length=10
+HELP_INFO
+    
+my $global_log_conf = '/usr/local/devel/ANNOTATION/panda/etc/logger.conf';
+my ($db_name, $qry_name, $out_name, $help, $usage, $logger_conf, $debug, $length, $logfile);
+
+# The template search path is either based on env variable or location of this script
+my $WF_TEMPLATE = $ENV{WF_TEMPLATE} || $Bin; 
+$WF_TEMPLATE .= '/' unless ($WF_TEMPLATE =~ /\/\Z/);
+
+
+GetOptions ("query=s"            => \$qry_name,
+            "db=s"               => \$db_name,
+            "out=s"              => \$out_name,
+            "help"               => \$help,
+            "usage"              => \$usage,
+            "logconf=s"          => \$logger_conf,
+            "debug|log_level=s"  => \$debug,
+            "length=i"           => \$length,
+            "logfile=s"          => \$logfile,
+            );
+
+# If usage or help requested print help info
+if ($help) {
+    print $help_msg;
+    exit;
+}
+
+if ($usage) {
+    print $usage_msg;
+    exit;
+}
+
+# Decide if the global logging configuration file is to be used ot the one specified
+# by the user
+$logger_conf = $logger_conf || "logger.conf";
+if ($logger_conf) {
+    # Check that the file exists, is a text file, and that it is readable.
+    if ( -e $logger_conf && -T $logger_conf && -r $logger_conf) {
+        $logger_conf = $logger_conf;
+    } else {
+        warn("Problem with the specified logger config file. Using global default.");
+        $logger_conf = $global_log_conf;
+    }
+} else {
+    $logger_conf = $global_log_conf;
+}
+
+# Make sure that the required parameters are specified
+unless ($db_name) {
+    print "No database specified. This is a required parameter.\n$usage_msg";
+    exit 1;
+}
+
+# Make sure that a valid query file is specified
+unless ($qry_name) {
+    print "No query specified. This is a required parameter.\n$usage_msg";
+    exit 1;
+}
+
+# If length is not specified then use the default of 10
+$length = $length || 10;
+
+# Set up the logger specification through the conf file
+Log::Log4perl->init($logger_conf);
+my $logger = get_logger("TIGR::Panda");
+
+# Override the debug level if it is specified by the user
+&set_debug_level if $debug;
+
+$logger->info("Filtering database file '$db_name' for query '$qry_name'\n");
+
+# Create the instance of the module for filtering the database
+my $dbFilter = new TIGR::Panda::FilterSearchDB(query     => $qry_name, 
+                                               db        => $db_name,   
+                                               length    => $length,
+                                               minidb    => $out_name,
+                                               template  => "${WF_TEMPLATE}FilterSearchDB_template.xml",
+                                               log_level => $debug,
+                                               logfile   => $logfile,
+                                               );
+my $mini_db = $dbFilter->filter;
+$logger->info("Filtered database file '$db_name' to create mini DB '$mini_db'\n");
+exit;
+
+################################## SUBROUTINES ###################################
+
+# Override the debug level specified by the configuration
+# file with the value specified by the user
+sub set_debug_level {
+    unless ($debug) {
+        return; # If the user has nt specified a debug then do nothing
+    }
+    $logger->error("In the set_debug_level subroutine. Changing debug level to $debug.");
+
+    my $debug = uc($debug);
+
+    my %levels = ( DEBUG => [5, $DEBUG],
+                   INFO  => [4, $INFO],
+                   WARN  => [3, $WARN],
+                   ERROR => [2, $ERROR],
+                   FATAL => [1, $FATAL] );
+    my %name_to_level = map { $_ => $levels{$_}->[1] } keys %levels;
+
+    my $setter = sub {
+        my $level_string = shift;
+        $logger->info("Setting new debug level to $level_string.");
+        my $level = $name_to_level{$level_string};
+        $logger->level($level);
+    };
+
+    if (exists $levels{$debug}) {
+        $setter->($debug);
+    } else {
+        $debug =~ tr/0-9//cd;
+        if ($debug >= 1 and $debug <= 5) {
+            my %level_to_name = reverse ( map { $_ => $levels{$_}->[0] } keys %levels );
+            $setter->( $level_to_name{$debug} );
+        } else {
+            $logger->warn("\"$debug\" is an invalid debug level.");
+            return 0;
+        }
+    }
+}
+
+# This subroutine sends a fatal error and dies
+sub abort {
+    my ($msg) = @_;
+    $logger->fatal($msg);
+    die;
+}

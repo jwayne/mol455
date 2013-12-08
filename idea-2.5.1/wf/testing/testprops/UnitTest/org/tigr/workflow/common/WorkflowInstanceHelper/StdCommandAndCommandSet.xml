@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<commandSetRoot type="template">
+    <commandSet type="serial">
+        <name>Root Command Set</name>
+        <id>0</id>
+        <maxParallelCmds>0</maxParallelCmds>
+        <marshalInterval>0</marshalInterval>
+        <status>
+            <total>0</total>
+            <complete>0</complete>
+            <incomplete>0</incomplete>
+            <failed>0</failed>
+            <pending>0</pending>
+            <errors>0</errors>
+            <running>0</running>
+            <waiting>0</waiting>
+            <interrupted>0</interrupted>
+            <message></message>
+        </status>
+        <commandSet type="serial">
+            <name>Command Set</name>
+            <id>0</id>
+            <maxParallelCmds>0</maxParallelCmds>
+            <marshalInterval>0</marshalInterval>
+            <status>
+                <total>0</total>
+                <complete>0</complete>
+                <incomplete>0</incomplete>
+                <failed>0</failed>
+                <pending>0</pending>
+                <errors>0</errors>
+                <running>0</running>
+                <waiting>0</waiting>
+                <interrupted>0</interrupted>
+                <message></message>
+            </status>
+            <restarted>false</restarted>
+        </commandSet>
+        <command>
+            <name>Command</name>
+            <id>0</id>
+            <retryCount>0</retryCount>
+            <retryAttempts>0</retryAttempts>
+            <timeOut>0</timeOut>
+        </command>
+        <restarted>false</restarted>
+    </commandSet>
+    <port>0</port>
+</commandSetRoot>

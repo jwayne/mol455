@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<commandSetRoot>
+    <commandSet type="serial" version="2.1">
+        <name>simple command set with DCE command</name>
+        <id>1051</id>
+        <configMapId>1</configMapId>
+        <startTime>2003-12-23T16:14:16.720-05:00</startTime>
+        <endTime>2003-12-23T16:14:21.577-05:00</endTime>
+        <state>error</state>
+        <status>
+            <complete>0</complete>
+            <incomplete>0</incomplete>
+            <failed>0</failed>
+            <errors>1</errors>
+            <running>0</running>
+            <waiting>0</waiting>
+            <interrupted>0</interrupted>
+            <message></message>
+        </status>
+        <command>
+            <name>RunDistributedCommand</name>
+            <id>1053</id>
+            <configMapId>1.2</configMapId>
+            <startTime>2003-12-23T16:14:17.207-05:00</startTime>
+            <endTime>2003-12-23T16:14:21.130-05:00</endTime>
+            <state>error</state>
+            <retryCount>0</retryCount>
+            <retryAttempts>0</retryAttempts>
+            <timeOut>0</timeOut>
+            <param>
+                <key>command</key>
+                <value>/home/sreenath/source/workflow/testing/testprops/UnitTest/org/tigr/workflow/common/DistributedProcessor/test.sh</value>
+            </param>
+            <dceSpec type="condor">
+                <jobID>59063</jobID>
+                <log>/export/raid1/server_apps/java/jakarta-tomcat-4.1.27/webapps/htcservice/WEB-INF/test/59063/event.log</log>
+                <specFile>test.condor</specFile>
+                <group>antware</group>
+                <mail>sreenath@tigr.org</mail>
+                <OS>Linux,Solaris,OSF1</OS>
+                <memory>512</memory>
+                <queue>fast</queue>
+                <duration>short</duration>
+                <priority>low</priority>
+            </dceSpec>
+        </command>
+      <restarted>false</restarted>
+    </commandSet>
+    <host>aegan-lx</host>
+<port>-1</port>
+</commandSetRoot>

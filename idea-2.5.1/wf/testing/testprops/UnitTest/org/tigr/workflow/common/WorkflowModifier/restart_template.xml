@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    
+<commandSetRoot type="template" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				xsi:schemaLocation='commandSet.xsd'>
+  <commandSet type="serial" version="3.0">
+    <name>command-set-A</name>
+    <configMapId>0</configMapId>
+    <commandSet type="parallel" version="3.0">
+      <name>command-set-B</name>
+      <configMapId>1</configMapId>
+      <commandSet type="serial" version="3.0">
+	<name>command-set-D</name>
+	<configMapId>1.1</configMapId>
+	<commandSet type="parallel" version="3.0">
+	  <name>command-set-F</name>
+	  <configMapId>1.1.1</configMapId>
+	  <commandSet type="serial" version="3.0">
+	    <name>command-set-I</name>
+	    <configMapId>1.1.1.1</configMapId>
+	    <command>
+	      <name>command-I1</name>
+	      <configMapId>1.1.1.1.1</configMapId>
+	      <type>RunUnixCommand</type>
+	    </command>
+	    <command>
+	      <name>distributed-command-I2</name>
+	      <configMapId>1.1.1.1.2</configMapId>
+	      <dceSpec type="&lt;GRID_TYPE&gt;">
+		<duration>medium</duration>
+		<priority>low</priority>
+		<OS>Linux</OS>
+		<queue>Assembly</queue>
+	      </dceSpec>
+	      <type>RunUnixCommand</type>
+	    </command>
+	    <command>
+	      <name>command-I3</name>
+	      <configMapId>1.1.1.1.3</configMapId>
+	      <type>RunUnixCommand</type>
+	    </command>
+	    <restarted>false</restarted>
+	  </commandSet>
+	  <commandSet type="parallel" version="3.0">
+	    <name>command-set-J</name>
+	    <configMapId>1.1.1.2</configMapId>
+	    <command>
+	      <name>command-J1</name>
+	      <configMapId>1.1.1.2.1</configMapId>
+	      <type>RunUnixCommand</type>
+	    </command>
+	    <command>
+	      <name>distributed-command-J2</name>
+	      <configMapId>1.1.1.2.2</configMapId>
+	      <dceSpec type="&lt;GRID_TYPE&gt;">
+		<duration>medium</duration>
+		<priority>low</priority>
+		<OS>Linux</OS>
+		<queue>Assembly</queue>
+	      </dceSpec>
+	      <type>RunUnixCommand</type>
+	    </command>
+	    <restarted>false</restarted>
+	  </commandSet>
+	  <commandSet type="distributed-serial" version="3.0">
+	    <name>command-set-K</name>
+	    <configMapId>1.1.1.3</configMapId>
+	    <command>
+	      <name>command-K1</name>
+	      <configMapId>1.1.1.3.1</configMapId>
+	      <type>RunUnixCommand</type>
+	    </command>
+	    <command>
+	      <name>distributed-command-K2</name>
+	      <configMapId>1.1.1.3.2</configMapId>
+	      <dceSpec type="&lt;GRID_TYPE&gt;">
+		<duration>medium</duration>
+		<priority>low</priority>
+		<OS>Linux</OS>
+		<queue>Assembly</queue>
+	      </dceSpec>
+	      <type>RunUnixCommand</type>
+	    </command>
+	    <command>
+	      <name>command-K3</name>
+	      <configMapId>1.1.1.3.3</configMapId>
+	      <type>RunUnixCommand</type>
+	    </command>
+	    <restarted>false</restarted>
+	  </commandSet>
+	  <commandSet type="distributed-parallel" version="3.0">
+	    <name>command-set-L</name>
+	    <configMapId>1.1.1.4</configMapId>
+	    <command>
+	      <name>distributed-command-L1</name>
+	      <configMapId>1.1.1.4.1</configMapId>
+	      <dceSpec type="&lt;GRID_TYPE&gt;">
+		<duration>medium</duration>
+		<priority>low</priority>
+		<OS>Linux</OS>
+		<queue>Assembly</queue>
+	      </dceSpec>
+	      <type>RunUnixCommand</type>
+	    </command>
+	    <command>
+	      <name>command-L2</name>
+	      <configMapId>1.1.1.4.2</configMapId>
+	      <type>RunUnixCommand</type>
+	    </command>
+	    <restarted>false</restarted>
+	  </commandSet>
+	  <commandSet type="remote-serial" version="3.0">
+	    <name>placeholder-command-set-M</name>
+	    <configMapId>1.1.1.5</configMapId>
+            <fileName>/home/aegan/bin/projects/workflow-2005-11-15/workflow/testing/testprops/UnitTest/org/tigr/workflow/common/WorkflowModifier/restart-subfile-M.xml</fileName>
+	    <restarted>false</restarted>
+	  </commandSet>
+	  <commandSet type="remote-parallel" version="3.0">
+	    <name>placeholder-command-set-N</name>
+	    <configMapId>1.1.1.6</configMapId>
+            <fileName>/home/aegan/bin/projects/workflow-2005-11-15/workflow/testing/testprops/UnitTest/org/tigr/workflow/common/WorkflowModifier/restart-subfile-N.xml</fileName>
+	    <restarted>false</restarted>
+	  </commandSet>
+	  <restarted>false</restarted>
+	</commandSet>
+	<commandSet type="serial" version="3.0">
+	  <name>command-set-G</name>
+	  <configMapId>1.1.2</configMapId>
+	  <command>
+	    <name>command-O</name>
+	    <configMapId>1.1.2.1</configMapId>
+	    <type>RunUnixCommand</type>
+	  </command>
+	  <commandSet type="serial" version="3.0">
+	    <name>command-set-P</name>
+	    <configMapId>1.1.2.2</configMapId>
+	    <command>
+	      <name>command-P1</name>
+	      <configMapId>1.1.2.2.1</configMapId>
+	      <type>RunUnixCommand</type>
+	    </command>
+	    <command>
+	      <name>distributed-command-P2</name>
+	      <configMapId>1.1.2.2.2</configMapId>
+	      <dceSpec type="&lt;GRID_TYPE&gt;">
+		<duration>medium</duration>
+		<priority>low</priority>
+		<OS>Linux</OS>
+		<queue>Assembly</queue>
+	      </dceSpec>
+	      <type>RunUnixCommand</type>
+	    </command>
+	    <command>
+	      <name>command-P3</name>
+	      <configMapId>1.1.2.2.3</configMapId>
+	      <type>RunUnixCommand</type>
+	    </command>
+	    <restarted>false</restarted>
+	  </commandSet>
+	  <commandSet type="parallel" version="3.0">
+	    <name>command-set-Q</name>
+	    <configMapId>1.1.2.3</configMapId>
+	    <command>
+	      <name>distributed-command-Q1</name>
+	      <configMapId>1.1.2.3.1</configMapId>
+	      <dceSpec type="&lt;GRID_TYPE&gt;">
+		<duration>medium</duration>
+		<priority>low</priority>
+		<OS>Linux</OS>
+		<queue>Assembly</queue>
+	      </dceSpec>
+	      <type>RunUnixCommand</type>
+	    </command>
+	    <command>
+	      <name>command-Q2</name>
+	      <configMapId>1.1.2.3.2</configMapId>
+	      <type>RunUnixCommand</type>
+	    </command>
+	    <restarted>false</restarted>
+	  </commandSet>
+	  <commandSet type="distributed-serial" version="3.0">
+	    <name>command-set-R</name>
+	    <configMapId>1.1.2.4</configMapId>
+	    <command>
+	      <name>command-R1</name>
+	      <configMapId>1.1.2.4.1</configMapId>
+	      <type>RunUnixCommand</type>
+	    </command>
+	    <command>
+	      <name>distributed-command-R2</name>
+	      <configMapId>1.1.2.4.2</configMapId>
+	      <dceSpec type="&lt;GRID_TYPE&gt;">
+		<duration>medium</duration>
+		<priority>low</priority>
+		<OS>Linux</OS>
+		<queue>Assembly</queue>
+	      </dceSpec>
+	      <type>RunUnixCommand</type>
+	    </command>
+	    <command>
+	      <name>command-R3</name>
+	      <configMapId>1.1.2.4.3</configMapId>
+	      <type>RunUnixCommand</type>
+	    </command>
+	    <restarted>false</restarted>
+	  </commandSet>
+	  <commandSet type="distributed-parallel" version="3.0">
+	    <name>command-set-S</name>
+	    <configMapId>1.1.2.5</configMapId>
+	    <command>
+	      <name>command-S1</name>
+	      <configMapId>1.1.2.5.1</configMapId>
+	      <type>RunUnixCommand</type>
+	    </command>
+	    <command>
+	      <name>distributed-command-S2</name>
+	      <configMapId>1.1.2.5.2</configMapId>
+	      <dceSpec type="&lt;GRID_TYPE&gt;">
+		<duration>medium</duration>
+		<priority>low</priority>
+		<OS>Linux</OS>
+		<queue>Assembly</queue>
+	      </dceSpec>
+	      <type>RunUnixCommand</type>
+	    </command>
+	    <restarted>false</restarted>
+	  </commandSet>
+	  <commandSet type="remote-serial" version="3.0">
+	    <name>placeholder-command-set-T</name>
+	    <configMapId>1.1.2.6</configMapId>
+            <fileName>/home/aegan/bin/projects/workflow-2005-11-15/workflow/testing/testprops/UnitTest/org/tigr/workflow/common/WorkflowModifier/restart-subfile-T.xml</fileName>
+	    <restarted>false</restarted>
+	  </commandSet>
+	  <commandSet type="remote-parallel" version="3.0">
+	    <name>placeholder-command-set-U</name>
+	    <configMapId>1.1.2.7</configMapId>
+            <fileName>/home/aegan/bin/projects/workflow-2005-11-15/workflow/testing/testprops/UnitTest/org/tigr/workflow/common/WorkflowModifier/restart-subfile-U.xml</fileName>
+	    <restarted>false</restarted>
+	  </commandSet>
+	  <command>
+	    <name>distributed-command-V</name>
+	    <configMapId>1.1.2.8</configMapId>
+	    <dceSpec type="&lt;GRID_TYPE&gt;">
+	      <duration>medium</duration>
+	      <priority>low</priority>
+	      <OS>Linux</OS>
+	      <queue>Assembly</queue>
+	    </dceSpec>
+	    <type>RunUnixCommand</type>
+	  </command>
+	  <restarted>false</restarted>
+	</commandSet>
+	<commandSet type="parallel" version="3.0">
+	  <name>command-set-H</name>
+	  <configMapId>1.1.3</configMapId>
+	  <command>
+	    <name>distributed-command-W</name>
+	    <configMapId>1.1.3.1</configMapId>
+	    <dceSpec type="&lt;GRID_TYPE&gt;">
+	      <duration>medium</duration>
+	      <priority>low</priority>
+	      <OS>Linux</OS>
+	      <queue>Assembly</queue>
+	    </dceSpec>
+	    <type>RunUnixCommand</type>
+	  </command>
+	  <command>
+	    <name>command-X</name>
+	    <configMapId>1.1.3.2</configMapId>
+	    <type>RunUnixCommand</type>
+	  </command>
+	  <restarted>false</restarted>
+	</commandSet>
+        <restarted>false</restarted>
+      </commandSet>
+      <command>
+	<name>distributed-command-E</name>
+	<configMapId>1.2</configMapId>
+	<dceSpec type="&lt;GRID_TYPE&gt;">
+	  <duration>medium</duration>
+	  <priority>low</priority>
+	  <OS>Linux</OS>
+	  <queue>Assembly</queue>
+	</dceSpec>
+	<type>RunUnixCommand</type>
+      </command>
+      <restarted>false</restarted>
+    </commandSet>
+    <command>
+      <name>command-C-wait</name>
+      <configMapId>2</configMapId>
+      <type>RunUnixCommand</type>
+    </command>
+    <restarted>false</restarted>
+  </commandSet> <!-- End top level command set -->
+</commandSetRoot> <!-- End of root -->

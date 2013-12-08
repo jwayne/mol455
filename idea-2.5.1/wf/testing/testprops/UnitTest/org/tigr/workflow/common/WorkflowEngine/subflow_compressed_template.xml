@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    
+<commandSetRoot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				xsi:schemaLocation='commandSet.xsd'>
+    <commandSet type="parallel">
+        <name>HTC Server Scalability Test</name>
+        <configMapId>1</configMapId>
+        <commandSet type="parallel">
+            <name>RunSGESerialCommands</name>
+            <configMapId>1.1</configMapId>
+            <command>
+                <name>RunUnixCommand</name>
+                <configMapId>1.1.1</configMapId>
+                <param>
+                    <key>command</key>
+                    <value>/usr/local/devel/ANNOTATION/ANTware/sleeper.pl</value>
+                </param>
+	        <arg>10</arg>
+            </command>
+            <command>
+                <name>RunUnixCommand</name>
+                <configMapId>1.1.2</configMapId>
+                <param>
+                    <key>command</key>
+                    <value>/usr/local/devel/ANNOTATION/ANTware/sleeper.pl</value>
+                </param>
+	        <arg>11</arg>
+            </command>
+	    <command>
+                <name>RunUnixCommand</name>
+                <configMapId>1.1.3</configMapId>
+                <param>
+                    <key>command</key>
+                    <value>/usr/local/devel/ANNOTATION/ANTware/sleeper.pl</value>
+                </param>
+	        <arg>12</arg>
+            </command>
+        </commandSet>
+	</commandSet> <!-- End top level command set -->
+</commandSetRoot> <!-- End of root -->

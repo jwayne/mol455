@@ -1,0 +1,59 @@
+#!/usr/bin/perl
+
+$projectBaseDir = &projectBaseDirectory($0);
+chdir($projectBaseDir)
+    or die "The directory $projectBaseDir could not be entered.\n";
+$java = `verify-java`;
+chomp($java);
+die unless $java;
+for ($maxHeapSize = 1240; $maxHeapSize > 0; $maxHeapSize = &decrement($maxHeapSize)){
+    $command = "$java -Xmx${maxHeapSize}m CheckAvailableMemory 2>/dev/null";
+    unless (system($command)){
+	&report($maxHeapSize);
+    }
+}
+print STDERR "$java could not execute CheckAvailableMemory with any heap size.\n";
+print STDERR "This may indicate a problem with your Java configuration.\n";
+exit(1);
+
+sub report{
+    my ($mhs) = @_;
+
+    if ($mhs < 1240){
+	print STDERR "WARNING:  The maximum heap size for Java on this machine is ${maxHeapSize}MB.\n";
+	print STDERR "WARNING:  IDEA may run out of memory if executed on this machine.\n";
+    }
+    print "$mhs\n";
+    exit(0);
+}
+
+sub decrement{
+    my ($heapSize) = @_;
+
+    if ($heapSize == 1240){
+	return 1100;
+    }
+    elsif ($heapSize >= 200){
+	return $heapSize - 100;
+    }
+    elsif ($heapSize >= 20){
+	return $heapSize - 10;
+    }
+    else{
+	return ($heapSize == 10) ? 5 : (($heapSize == 5) ? 2 : (($heapSize == 2) ? 1 : 0));
+    }
+}
+
+sub projectBaseDirectory{
+    
+    my ($commandExecuted) = @_;
+
+    my ($projectBaseDir, @programExecutedSubparts);
+    
+    @programExecutedSubparts = split(/\//, $commandExecuted);
+    pop(@programExecutedSubparts);
+    my $projectBaseDir = join("/", @programExecutedSubparts);
+    return $projectBaseDir;
+}
+
+   

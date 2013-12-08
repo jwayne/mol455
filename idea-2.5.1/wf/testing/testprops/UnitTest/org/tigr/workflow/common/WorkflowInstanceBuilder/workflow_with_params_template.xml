@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    
+<commandSetRoot type="template" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				xsi:schemaLocation='commandSet.xsd'>
+	<commandSet type="serial">
+		<name>SerialSingleWorkflow</name>
+		<configMapId>1</configMapId>
+        <config>
+            <param>
+                <key>second</key>
+                <value>second_value</value>
+            </param>
+        </config>
+		<command>
+			<name>CheckUpdates</name>
+			<configMapId>1.1</configMapId>
+            <param>
+                <key>command</key>
+                <value>ls</value>
+            </param>
+		</command> <!-- End of command CheckUpdates-->
+		<command>
+			<name>WriteSequence</name>
+			<configMapId>1.2</configMapId>
+            <flag>l</flag>
+            <arg>*.ini</arg>
+		</command> <!-- End of WriteSequence -->
+		<command>
+			<name>VerifySequence</name>
+			<configMapId>1.3</configMapId>
+            <param>
+                <key>command</key>
+                <value>ls</value>
+            </param>
+            <param>
+                <key>user</key>
+                <value>amahurka</value>
+            </param>
+		</command> <!-- End of command VerifySequence-->
+	  <restarted>false</restarted>
+	</commandSet> <!-- End top level command set -->
+</commandSetRoot> <!-- End of root -->

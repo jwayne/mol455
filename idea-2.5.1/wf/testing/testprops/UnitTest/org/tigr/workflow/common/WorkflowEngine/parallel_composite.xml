@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<commandSetRoot type="instance">
+    <commandSet type="serial" version="2.2">
+        <name>Unix Command Flow</name>
+        <id>44064</id>
+        <configMapId>1</configMapId>
+        <state>incomplete</state>
+        <command>
+            <name>RunUnixCommand</name>
+            <id>44065</id>
+
+            <configMapId>1.1</configMapId>
+            <state>incomplete</state>
+            <retryCount>0</retryCount>
+            <retryAttempts>0</retryAttempts>
+            <timeOut>0</timeOut>
+            <param>
+                <key>command</key>
+                <value>ls</value>
+            </param>
+            <arg>*.ini</arg>
+        </command>
+        <command>
+            <name>RunUnixCommand</name>
+            <id>44066</id>
+
+            <configMapId>1.2</configMapId>
+            <state>incomplete</state>
+            <retryCount>0</retryCount>
+            <retryAttempts>0</retryAttempts>
+            <timeOut>0</timeOut>
+            <param>
+                <key>command</key>
+                <value>ls</value>
+            </param>
+            <flag>-a</flag>
+            <flag>-l</flag>
+            <arg>*.ini</arg>
+        </command>
+        <commandSet type="serial" version="2.2">
+            <name>RunSerialCommands</name>
+            <fileName>single_command_out.xml</fileName>
+            <config>
+                <param>
+                    <key>template</key>
+                    <value>single_command_template.xml</value>
+                </param>
+                <param>
+                    <key>configfile</key>
+                    <value>single_command.ini</value>
+                </param>
+            </config>
+            <id>44067</id>
+            <configMapId>1.3</configMapId>
+            <state>incomplete</state>
+          <restarted>false</restarted>
+        </commandSet>
+      <restarted>false</restarted>
+    </commandSet>
+    <host>aegan-lx</host>
+<port>-1</port>
+</commandSetRoot>
