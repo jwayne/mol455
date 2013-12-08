@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<commandSetRoot type="instance">
+    <commandSet type="parallel" version="2.2">
+        <name>simple parallel</name>
+        <id>36187</id>
+        <maxParallelCmds>0</maxParallelCmds>
+        <configMapId>1</configMapId>
+        <startTime>2005-01-14T12:43:32.131-05:00</startTime>
+        <endTime>2005-01-14T12:43:37.251-05:00</endTime>
+        <state>failed</state>
+        <status>
+            <total>3</total>
+            <complete>2</complete>
+            <incomplete>0</incomplete>
+            <failed>1</failed>
+            <pending>0</pending>
+            <errors>0</errors>
+            <running>0</running>
+            <waiting>0</waiting>
+            <interrupted>0</interrupted>
+            <message>Failed in executing the command type: TestFailCommand</message>
+        </status>
+        <command>
+            <name>TestCommand</name>
+            <id>36188</id>
+            <configMapId>1.1</configMapId>
+            <startTime>2005-01-14T12:43:32.156-05:00</startTime>
+            <endTime>2005-01-14T12:43:33.190-05:00</endTime>
+            <state>complete</state>
+            <retryCount>0</retryCount>
+            <retryAttempts>0</retryAttempts>
+            <timeOut>0</timeOut>
+            <status>
+                <retValue>0</retValue>
+            </status>
+            <param>
+                <key>pkey1</key>
+                <value>pval1</value>
+            </param>
+        </command>
+        <command>
+            <name>TestFailCommand</name>
+            <id>36189</id>
+            <configMapId>1.2</configMapId>
+            <startTime>2005-01-14T12:43:32.156-05:00</startTime>
+            <endTime>2005-01-14T12:43:33.241-05:00</endTime>
+            <state>failed</state>
+            <retryCount>0</retryCount>
+            <retryAttempts>0</retryAttempts>
+            <timeOut>0</timeOut>
+            <status>
+                <retValue>0</retValue>
+                <message>Failed in executing the command type: TestFailCommand Original cause of exception. </message>
+            </status>
+            <param>
+                <key>pkey</key>
+                <value>pvalue</value>
+            </param>
+        </command>
+        <command>
+            <name>SlowTestCommand</name>
+            <id>36189</id>
+            <configMapId>1.3</configMapId>
+            <startTime>2005-01-14T12:43:32.159-05:00</startTime>
+            <endTime>2005-01-14T12:43:37.220-05:00</endTime>
+            <state>complete</state>
+            <retryCount>0</retryCount>
+            <retryAttempts>0</retryAttempts>
+            <timeOut>0</timeOut>
+            <status>
+                <retValue>0</retValue>
+            </status>
+            <param>
+                <key>pkey</key>
+                <value>pvalue</value>
+            </param>
+        </command>
+      <restarted>false</restarted>
+    </commandSet>
+    <host>aegan-lx</host>
+<port>-1</port>
+</commandSetRoot>

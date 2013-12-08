@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    
+<commandSetRoot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				xsi:schemaLocation='commandSet.xsd'>
+    <commandSet type="parallel">
+        <name>Top Level CommandSet</name>
+        <configMapId>1</configMapId>
+        <commandSet type="parallel">
+            <name>Subflow CommandSet</name>
+            <configMapId>1.1</configMapId>
+	    <config>
+	        <param>
+		    <key>template</key>
+          	    <value>subflow_compressed_template.xml</value>
+	    	</param>
+	        <param>
+		    <key>configfile</key>
+          	    <value>subflow_compressed.ini</value>
+	    	</param>
+	    </config>
+        </commandSet>
+    </commandSet> <!-- End top level command set -->
+</commandSetRoot> <!-- End of root -->

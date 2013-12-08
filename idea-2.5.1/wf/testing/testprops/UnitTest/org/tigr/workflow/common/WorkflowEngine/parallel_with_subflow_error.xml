@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<commandSetRoot type="instance">
+    <commandSet type="parallel" version="2.2">
+        <name>Unix Command Flow</name>
+        <id>44064</id>
+        <configMapId>1</configMapId>
+        <state>incomplete</state>
+        <commandSet type="serial" version="2.2">
+            <name>RunSerialCommands</name>
+            <id>44067</id>
+            <configMapId>1.3</configMapId>
+            <fileName>parallel_error_subflow_out.xml</fileName>
+            <state>incomplete</state>
+          <restarted>false</restarted>
+        </commandSet>
+        <command>
+            <name>RunUnixCommand</name>
+            <id>44065</id>
+            <configMapId>1.1</configMapId>
+            <state>incomplete</state>
+            <retryCount>0</retryCount>
+            <retryAttempts>0</retryAttempts>
+            <timeOut>0</timeOut>
+            <param>
+                <key>command</key>
+                <value>ls</value>
+            </param>
+            <arg>*.ini</arg>
+        </command>
+      <restarted>false</restarted>
+    </commandSet>
+    <host>aegan-lx</host>
+<port>-1</port>
+</commandSetRoot>

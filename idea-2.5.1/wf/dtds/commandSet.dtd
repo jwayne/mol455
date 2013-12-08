@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!ELEMENT commandSetRoot (CommandSet)>
+<!ELEMENT commandSet (name, id?, startTime?, endTime?, state?, waitUntil?, 
+										successful?, config?, commandSetStatus?, (%commandList;)+)>
+	<!ATTLIST commandSet type (serial | parallel) #REQUIRED>
+<!ELEMENT command (name, id?, startTime?, endTime?, state?, waitUntil?, type? retryCount?, 
+										timeOut?, successful?, config?, commandStatus?, param*)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT id (#PCDATA)>
+<!ELEMENT startTime (#PCDATA)>
+<!ELEMENT endTime (#PCDATA)>
+<!ELEMENT state (#PCDATA)>
+<!ELEMENT waitUntil (#PCDATA)>
+<!ELEMENT successful (#PCDATA)>
+<!ELEMENT config (filePath?, param*)>
+<!ELEMENT commandSetStatus (returnValue?, complete?, successful?, errors?, running?, waiting?, paused?, interrupted?, message?)>
+<!ENTITY %commandList "commandSet | command">
+<!ELEMENT type (#PCDATA)>
+<!ELEMENT retryCount (#PCDATA)>
+<!ELEMENT timeOut (#PCDATA)>
+<!ELEMENT commandStatus (returnValue? message?)>
+<!ELEMENT param (key, value+)>
+<!ELEMENT filePath (#PCDATA)>
+<!ELEMENT returnValue (#PCDATA)>
+<!ELEMENT errors (#PCDATA)>
+<!ELEMENT running (#PCDATA)>
+<!ELEMENT waiting (#PCDATA)>
+<!ELEMENT paused (#PCDATA)>
+<!ELEMENT message (#PCDATA)>
+<!ELEMENT key (#PCDATA)>
+<!ELEMENT value (#PCDATA)>

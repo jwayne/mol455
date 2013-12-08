@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<commandSetRoot type="instance">
+    <commandSet type="serial" version="3.0">
+        <name>Test Argument With Space</name>
+        <comment></comment>
+        <id>7778</id>
+        <maxParallelCmds>0</maxParallelCmds>
+        <marshalInterval>0</marshalInterval>
+        <configMapId>1</configMapId>
+        <state>incomplete</state>
+        <command>
+            <name>ArgWithSpace</name>
+            <comment></comment>
+            <id>7779</id>
+            <configMapId>1.1</configMapId>
+            <state>incomplete</state>
+            <type>RunUnixCommand</type>
+            <executable>find</executable>
+            <retryCount>0</retryCount>
+            <retryAttempts>0</retryAttempts>
+            <timeOut>0</timeOut>
+            <param>
+                <key>command</key>
+                <value>find</value>
+            </param>
+            <arg>-name &apos;*.bsml&apos;</arg>
+        </command>
+        <restarted>false</restarted>
+    </commandSet>
+    <port>0</port>
+</commandSetRoot>

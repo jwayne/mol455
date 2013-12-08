@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<commandSetRoot type="instance">
+    <commandSet type="serial" version="3.0">
+        <name>Unix Command Flow</name>
+        <id>7947</id>
+        <maxParallelCmds>0</maxParallelCmds>
+        <marshalInterval>0</marshalInterval>
+        <configMapId>1</configMapId>
+        <state>incomplete</state>
+        <command>
+            <name>RunUnixCommand</name>
+            <id>7948</id>
+            <configMapId>1.1</configMapId>
+            <state>incomplete</state>
+            <executable>ls</executable>
+            <retryCount>0</retryCount>
+            <retryAttempts>0</retryAttempts>
+            <timeOut>0</timeOut>
+            <param>
+                <key>command</key>
+                <value>ls</value>
+            </param>
+            <flag>a</flag>
+            <arg>*.ini</arg>
+            <arg>*.bak *.tmp</arg>
+        </command>
+        <command>
+            <name>RunUnixCommand</name>
+            <id>7949</id>
+            <configMapId>1.1</configMapId>
+            <state>incomplete</state>
+            <executable>ls</executable>
+            <retryCount>0</retryCount>
+            <retryAttempts>0</retryAttempts>
+            <timeOut>0</timeOut>
+            <param>
+                <key>command</key>
+                <value>ls</value>
+            </param>
+            <flag>al</flag>
+            <arg>*.xml</arg>
+            <arg>*.prop</arg>
+        </command>
+        <command>
+            <name>RunUnixCommand</name>
+            <id>7950</id>
+            <configMapId>1.2</configMapId>
+            <state>incomplete</state>
+            <executable>ls</executable>
+            <retryCount>0</retryCount>
+            <retryAttempts>0</retryAttempts>
+            <timeOut>0</timeOut>
+            <param>
+                <key>command</key>
+                <value>ls</value>
+            </param>
+            <arg>hello,world&quot;s s&quot;</arg>
+        </command>
+        <restarted>false</restarted>
+    </commandSet>
+    <port>0</port>
+</commandSetRoot>

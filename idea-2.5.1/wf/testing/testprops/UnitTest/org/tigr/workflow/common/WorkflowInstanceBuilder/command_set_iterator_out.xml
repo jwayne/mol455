@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<commandSetRoot type="instance">
+    <commandSet type="serial" version="3.0">
+        <name>Unix Command Flow</name>
+        <id>7844</id>
+        <maxParallelCmds>0</maxParallelCmds>
+        <marshalInterval>0</marshalInterval>
+        <configMapId>1</configMapId>
+        <state>incomplete</state>
+        <commandSet type="parallel" version="3.0">
+            <name>Sub Workflow</name>
+            <id>7845</id>
+            <maxParallelCmds>0</maxParallelCmds>
+            <marshalInterval>0</marshalInterval>
+            <configMapId>1.2</configMapId>
+            <fileName>subworkflow.xml</fileName>
+            <state>incomplete</state>
+            <config>
+                <param>
+                    <key>template</key>
+                    <value>subworkflow_template.xml</value>
+                </param>
+                <param>
+                    <key>configfile</key>
+                    <value>subworkflow_config.ini</value>
+                </param>
+                <requiredArgCount>0</requiredArgCount>
+                <requiredParams/>
+                <optionalParams/>
+            </config>
+            <restarted>false</restarted>
+        </commandSet>
+        <commandSet type="parallel" version="3.0">
+            <name>Sub Workflow</name>
+            <id>7848</id>
+            <maxParallelCmds>0</maxParallelCmds>
+            <marshalInterval>0</marshalInterval>
+            <configMapId>1.2</configMapId>
+            <fileName>subworkflow1.xml</fileName>
+            <state>incomplete</state>
+            <config>
+                <param>
+                    <key>template</key>
+                    <value>subworkflow1_template.xml</value>
+                </param>
+                <param>
+                    <key>configfile</key>
+                    <value>subworkflow1_config.ini</value>
+                </param>
+                <requiredArgCount>0</requiredArgCount>
+                <requiredParams/>
+                <optionalParams/>
+            </config>
+            <restarted>false</restarted>
+        </commandSet>
+        <restarted>false</restarted>
+    </commandSet>
+    <port>0</port>
+</commandSetRoot>

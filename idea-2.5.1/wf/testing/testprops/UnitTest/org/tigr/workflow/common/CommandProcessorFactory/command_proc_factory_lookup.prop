@@ -1,0 +1,14 @@
+serial = org.tigr.workflow.common.SerialCommandProcessorDispatcher
+parallel = org.tigr.workflow.common.ParallelCommandProcessorDispatcher
+dummyCommand = org.tigr.workflow.egc.DummyCommand
+checkUpdates = org.tigr.workflow.egc.CheckUpdates
+writeSequence = org.tigr.workflow.egc.WriteSequence
+verifySequence = org.tigr.workflow.egc.VerifySequence
+predictFunction = org.tigr.workflow.egc.PredictFunction
+hmm = org.tigr.workflow.egc.Hmm
+interpro = org.tigr.workflow.egc.Interpro
+blastP = org.tigr.workflow.egc.BlastP
+loadDbHmm = org.tigr.workflow.egc.LoadDbHmm
+loadDbBlast = org.tigr.workflow.egc.LoadDbBlast
+loadDbInterpro = org.tigr.workflow.egc.LoadDbInterpro
+RunUnixCommand=org.tigr.workflow.common.SystemCommandProcessor

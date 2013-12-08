@@ -1,0 +1,17 @@
+#!/usr/bin/perl -w
+use strict;
+
+#print "The ARGS : @ARGV \n";
+
+my $command;
+my $file;
+
+$command = "perl -i -pe 's/<state>running/<state>interrupted/g'";
+#$command = "perl -i -pe 's/<state>incomplete/<state>interrupted/g'";
+$command = "$command @ARGV";
+
+# Invoke the command as a system command
+#print "$command\n";
+system ($command) && die "Can't run $command: $!";
+
+exit $?;

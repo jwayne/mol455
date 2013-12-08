@@ -1,0 +1,70 @@
+#!/usr/bin/perl -w
+use strict;
+require TIGR::Foundation;
+use Mail::Send;
+
+my $DEBUG_LEVEL;
+## internal variables and identifiers
+
+my $usage_info = <<USAGE_INFO;
+ConfirmRequestComplete <--requestID=id> <--returnValue=returnValue> <--message=messge> 
+																	<--email=email address>
+Typical invocation:
+    ConfirmRequestComplete --requestID=2 --returnValue=0 --message=failed --email=sreenath\@tigr.org
+USAGE_INFO
+
+my $foundation = new TIGR::Foundation;
+
+my $notify_address; 
+my $req_id; 
+my $ret_val;
+my $msg;
+my $usage;
+
+$foundation->TIGR_GetOptions('requestID=s' => \$req_id,
+                             'returnValue=s' => \$ret_val,
+                             'message=s' => \$msg, 
+                             'email=s' => \$notify_address, 
+							 'usage' => \$usage);
+
+# If the user has specified the usage flag then print usage and exit
+if ( $usage ) {
+    print $usage_info;
+    exit 1;
+}
+
+print "The parmeters to the script are : $req_id, $ret_val, $msg \n";
+
+my $subject;
+my $body;
+if ($ret_val == 0) {
+	$subject = "Workflow with id $req_id is complete with a return value of $ret_val."; 
+}
+else {
+	$subject = "Workflow with id $req_id is unsuccessful with a return value of $ret_val."; 
+}
+
+# Create body of the email
+$body= $subject."\n".$msg;
+
+#send email
+&send_mail($notify_address, $subject, $body);
+print "Email has been sent. \n";
+
+exit 0;
+
+
+# ----------------------------------------- SUBROUTINES ----------------------------------
+
+# Subroutine to send e-mail about workflow completion to the the user who invoked the workflow
+sub send_mail {
+    my ($address, $subject, $body) = @_;
+
+    # Create the new mail object
+    my $msg = new Mail::Send;
+    $msg->to($address);
+    $msg->subject($subject);
+    my $fh = $msg->open;
+    print $fh $body;
+    $fh->close;    
+}

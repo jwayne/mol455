@@ -1,0 +1,21 @@
+#!/bin/bash
+# This is a shell wrapper script that launches the qsub command
+# This command first moves to the specified initial directory before calling qsub
+
+# Get the current working directory to create the redirect files
+dir=`pwd`
+
+# Get the initial directory by reading the first argument
+cwd=$1
+cd $cwd
+
+# Shift so that the current argument is removed
+shift 
+
+# get the error and output file prefix
+prefix=$1
+shift
+
+# Invoke the qsub command to submit to the grid
+#echo $*
+qsub $* 1>${dir}/${prefix}.out 2>${dir}/${prefix}.err
