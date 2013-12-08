@@ -7,6 +7,12 @@ lnf
 mlc
 *.out
 lnf
+1
+2NG.dN
+2NG.dS
+2NG.t
+4fold.nuc
+res
 
 #python
 *.pyc
@@ -32,3 +38,4 @@ lnf
 
 # Compiled codeml
 paml4.7a/src/codeml
+bin/codeml

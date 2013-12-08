@@ -1,7 +1,7 @@
 PRGS =  baseml codeml basemlg mcmctree pamp evolver yn00 chi2 
 CC = cc # cc, gcc, cl
 
-CFLAGS = -pg#-O4 -funroll-loops -fomit-frame-pointer -finline-functions
+CFLAGS = -O4 -funroll-loops -fomit-frame-pointer -finline-functions
 
 #MAC OSX G5:
 #CFLAGS = -mcpu=G5 -O4 -funroll-loops -fomit-frame-pointer -finline-functions
@@ -18,6 +18,8 @@ CFLAGS = -pg#-O4 -funroll-loops -fomit-frame-pointer -finline-functions
 LIBS = -lm # -lM
 
 all : $(PRGS)
+clean :
+	@rm -f $(PRGS) *.o core
 
 baseml : baseml.c tools.c treesub.c treespace.c paml.h 
 	$(CC) $(CFLAGS) -o $@ baseml.c tools.c $(LIBS)
