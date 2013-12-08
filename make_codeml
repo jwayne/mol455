@@ -1,5 +1,9 @@
 #!/bin/bash
 cd paml4.7a/src/
-make codeml
-cd ../..
-cp paml4.7a/src/codeml bin/codeml
+if [ $1 ]; then
+    make $1
+else
+    make codeml
+    cd ../..
+    cp paml4.7a/src/codeml bin/codeml
+fi
