@@ -1,0 +1,2 @@
+cat uninstall-modified-list | xargs git checkout -- 
+cat uninstall-remove-list | xargs rm -r
