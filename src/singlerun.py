@@ -23,13 +23,25 @@ class SingleRun(object):
             # Use filename to determine what input type it is
             # TODO: Open up file to sanity check inputs, and provide greater flexibility
             if fname_in.endswith(".ctl"):
+                if inputs['ctl']:
+                    raise ValueError("Duplicate ctl files")
                 inputs['ctl'] = fname_in
             elif fname_in.endswith("tree.txt"):
+                if inputs['tree']:
+                    raise ValueError("Duplicate tree files")
                 inputs['tree'] = fname_in
             elif fname_in.endswith("trees.txt"):
+                if inputs['bootstrap_trees']:
+                    raise ValueError("Duplicate bootstrap tree files")
                 inputs['bootstrap_trees'] = fname_in
             elif fname_in.endswith(".aln"):
+                if inputs['codon_aln']:
+                    raise ValueError("Duplicate codon alignment files")
                 inputs['codon_aln'] = fname_in
+            elif fname_in.endswith(".gibds"):
+                if inputs['homolog_gbids']:
+                    raise ValueError("Duplicate lists of gbids")
+                inputs['homolog_gbids'] = fname_in
             else:
                 raise NotImplementedError()
 
