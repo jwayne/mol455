@@ -7,7 +7,7 @@ import os
 from preprocess import (fetch_homologs, fetch_seqs, run_clustalw2, run_pal2nal,
                         run_phyml, convert_maintree, convert_boottrees,
                         make_ctl)
-from utils import ts_str, bin_dir
+from utils import ts_str, bin_dir, data_dir
 
 
 AUTOMATIC = "AUTOMATIC"
@@ -15,7 +15,7 @@ AUTOMATIC = "AUTOMATIC"
 
 class SingleRun(object):
 
-    def __init__(self, fnames_in, dirname_out, analyze_bootstrap):
+    def __init__(self, fnames_in, prot_id_in, dirname_out, n_bootstrap, analyze_bootstrap):
         """
         Categorize input files and create the appropriate output directory,
         stored at `self.dirname_out`.
@@ -23,38 +23,45 @@ class SingleRun(object):
         @param fnames_in:
             absolute paths of input files
         """
-        inputs = ('homolog_gbids',
-                  'homolog_nucs', 'homolog_aas',
-                  'aa_aln', 'codon_aln',
+        #XXX: it isn't checked for that inputs match each other!
+        if not fnames_in and not prot_id_in:
+            raise ValueError("No input files provided")
+
+        inputs = ('prot_id', 'homologue_protids',
+                  'nucs_fasta', 'prots_fasta',
+                  'prots_aln', 'codons_aln',
                   'tree', 'boot_trees',
                   'ctl_template')
         inputs = dict((inp, None) for inp in inputs)
+
+        if prot_id_in:
+            inputs['prot_id'] = prot_id_in
 
         fnames_in = [os.path.abspath(fname_in) for fname_in in fnames_in]
         for fname_in in fnames_in:
             # Use filename to determine what input type it is
             # TODO: Open up file to sanity check inputs, and provide greater flexibility
             fname_part = os.path.split(fname_in)[-1]
-            if fname_in.endswith(".gbids"):
-                if inputs['homolog_gbids']:
-                    raise ValueError("Duplicate lists of gbids")
-                inputs['homolog_gbids'] = fname_in
+            if fname_in.endswith(".protids"):
+                if inputs['homologue_protids']:
+                    raise ValueError("Duplicate lists of prot_ids")
+                inputs['homologue_protids'] = fname_in
             elif fname_part == "nucleotides.fasta":
-                if inputs['homolog_nucs']:
+                if inputs['nucs_fasta']:
                     raise ValueError("Duplicate nucleotide sequence files")
-                inputs['homolog_nucs'] = fname_in
-            elif fname_part == "protein.fasta":
-                if inputs['homolog_aas']:
+                inputs['nucs_fasta'] = fname_in
+            elif fname_part == "proteins.fasta":
+                if inputs['prots_fasta']:
                     raise ValueError("Duplicate protein sequence files")
-                inputs['homolog_aas'] = fname_in
-            elif fname_part == "protein.aln":
-                if inputs['aa_aln']:
+                inputs['prots_fasta'] = fname_in
+            elif fname_part == "proteins.aln":
+                if inputs['prots_aln']:
                     raise ValueError("Duplicate protein alignment files")
-                inputs['aa_aln'] = fname_in
+                inputs['prots_aln'] = fname_in
             elif fname_in.endswith(".aln"):
-                if inputs['codon_aln']:
+                if inputs['codons_aln']:
                     raise ValueError("Duplicate codon alignment files")
-                inputs['codon_aln'] = fname_in
+                inputs['codons_aln'] = fname_in
             elif fname_in.endswith("_tree.txt"):
                 if inputs['tree']:
                     raise ValueError("Duplicate tree files")
@@ -76,17 +83,26 @@ class SingleRun(object):
 
         if analyze_bootstrap == AUTOMATIC:
             if inputs['tree']:
-                analyze_bootstrap = False
+                self.analyze_bootstrap = False
             elif inputs['boot_trees']:
-                analyze_bootstrap = True
+                self.analyze_bootstrap = True
             else:
                 # If no tree provided, default to not analyzing bootstrap trees
-                analyze_bootstrap = False
+                self.analyze_bootstrap = False
+        elif analyze_bootstrap:
+            if n_bootstrap <= 1:
+                raise ValueError("Cannot analyze bootstrap trees with n_bootstrap<=1")
+        self.n_bootstrap = n_bootstrap
 
+        # TODO: name dirname_out after first protein sequence in file
         if not dirname_out:
-            head, tail = os.path.split(fnames_in[0])
-            os.chdir(head)
-            dirname_out = ".".join(tail.split(".")[:-1]) + ts_str()
+            os.chdir(data_dir())
+            if not fnames_in:
+                prefix = prot_id_in
+            else:
+                tail = os.path.split(fnames_in[0])[-1]
+                prefix = ".".join(tail.split(".")[:-1])
+            dirname_out = "%s-%s" % (prefix, ts_str())
             dirname_out = os.path.abspath(dirname_out)
             if os.path.exists(dirname_out):
                 raise NotImplementedError()
@@ -96,7 +112,7 @@ class SingleRun(object):
         self.dirname_out = dirname_out
 
 
-    def preprocess(self, n_bootstrap, analyze_bootstrap):
+    def preprocess(self):
         """
         Preprocess input files by creating necessary inputs for codeml analysis.
         These inputs are stored in `self.dirname_out`.
@@ -105,69 +121,55 @@ class SingleRun(object):
 
         # TODO: Check that files are coordinated with each other, i.e. contain the
         #       same sequences, etc
-        def _check_homolog_gbids():
-            if not self.inputs['homolog_gbids']:
-                if not self.inputs['gbid']:
+        def _check_homologue_protids():
+            if not self.inputs['homologue_protids']:
+                if not self.inputs['prot_id']:
                     raise ValueError("No input sequence ids provided")
                 # BLAST search
-                self.inputs['homolog_gbids'], a, b = fetch_homologs(self.inputs['gbid'])
-                if self.inputs['homolog_nucs']:
-                    sys.stderr.write("Overwriting input homolog_nucs\n")
-                    self.inputs['homolog_nucs'] = a
-                if self.inputs['homolog_aas']:
-                    sys.stderr.write("Overwriting input homolog_aas\n")
-                    self.inputs['homolog_aas'] = b
-        def _check_homolog_nucs():
-            if not self.inputs['homolog_nucs']:
-                if not self.inputs['homolog_gbids']:
-                    # BLAST search
-                    raise NotImplementedError()
-                    _check_homolog_gbids()
-                else:
-                    # UNIPROT search
-                    self.inputs['homolog_nucs'], a = fetch_seqs(self.inputs['homolog_gbids'])
-                    if self.inputs['homolog_aas']:
-                        sys.stderr.write("Overwriting input homolog_aas\n")
-                    self.inputs['homolog_aas'] = a
-        def _check_homolog_aas():
-            if not self.inputs['homolog_aas']:
-                if not self.inputs['homolog_gbids']:
-                    # BLAST search
-                    raise NotImplementedError()
-                    _check_homolog_gbids()
-                else:
-                    # UNIPROT search
-                    a, self.inputs['homolog_aas'] = fetch_seqs(self.inputs['homolog_gbids'])
-                    if self.inputs['homolog_nucs']:
-                        sys.stderr.write("Overwriting input homolog_nucs\n")
-                    self.inputs['homolog_nucs'] = a
-        def _check_aa_aln():
-            if not self.inputs['aa_aln']:
-                _check_homolog_aas()
-                self.inputs['aa_aln'] = run_clustalw2(self.inputs['homolog_aas'])
-        def _check_codon_aln():
-            if not self.inputs['codon_aln']:
-                _check_homolog_nucs()
-                _check_aa_aln()
-                self.inputs['codon_aln'] = run_pal2nal(
-                        self.inputs['aa_aln'], self.inputs['homolog_nucs'])
+                self.inputs['homologue_protids'] = fetch_homologs(self.inputs['prot_id'])
+        def _check_nucs_fasta():
+            if not self.inputs['nucs_fasta']:
+                _check_homologue_protids()
+                # UNIPROT search
+                self.inputs['nucs_fasta'], a = fetch_seqs(self.inputs['homologue_protids'])
+                if self.inputs['prots_fasta']:
+                    sys.stderr.write("Overwriting input prots_fasta\n")
+                self.inputs['prots_fasta'] = a
+        def _check_prots_fasta():
+            if not self.inputs['prots_fasta']:
+                _check_homologue_protids()
+                # UNIPROT search
+                a, self.inputs['prots_fasta'] = fetch_seqs(self.inputs['homologue_protids'])
+                if self.inputs['nucs_fasta']:
+                    sys.stderr.write("Overwriting input nucs_fasta\n")
+                self.inputs['nucs_fasta'] = a
+        def _check_prots_aln():
+            if not self.inputs['prots_aln']:
+                _check_prots_fasta()
+                self.inputs['prots_aln'] = run_clustalw2(self.inputs['prots_fasta'])
+        def _check_codons_aln():
+            if not self.inputs['codons_aln']:
+                _check_nucs_fasta()
+                _check_prots_aln()
+                self.inputs['codons_aln'] = run_pal2nal(self.inputs['prots_aln'],
+                        self.inputs['nucs_fasta'], self.inputs['prots_fasta'])
         def _check_tree():
             if not self.inputs['tree']:
-                _check_aa_aln()
-                self.inputs['tree'], _ = run_phyml(self.inputs['aa_aln'], n_bootstrap)
+                _check_prots_aln()
+                self.inputs['tree'], _ = run_phyml(self.inputs['prots_aln'], self.n_bootstrap)
         def _check_boot_trees():
             if not self.inputs['boot_trees']:
-                _check_aa_aln()
-                _, self.inputs['boot_trees'] = run_phyml(self.inputs['aa_aln'], n_bootstrap)
+                _check_prots_aln()
+                _, self.inputs['boot_trees'] = run_phyml(self.inputs['prots_aln'], self.n_bootstrap)
 
-        _check_codon_aln()
-        if not analyze_bootstrap:
+        _check_codons_aln()
+        if not self.analyze_bootstrap:
             _check_tree()
             self.bootstrap = False
             # Get rid of confidences in tree
             fname_tree = convert_maintree(self.inputs['tree'])
             # Generate ctl file.
-            self.ctl = make_ctl(self.inputs['codon_aln'], fname_tree,
+            self.ctl = make_ctl(self.inputs['codons_aln'], fname_tree,
                     self.inputs["ctl_template"])
         else:
             _check_boot_trees()
@@ -177,7 +179,7 @@ class SingleRun(object):
             # Generate ctl file.
             self.ctls = []
             for fname_tree in fname_trees:
-                self.ctls.append(make_ctl(self.inputs['codon_aln'], fname_tree,
+                self.ctls.append(make_ctl(self.inputs['codons_aln'], fname_tree,
                         self.inputs["ctl_template"]))
 
 
@@ -192,8 +194,10 @@ class SingleRun(object):
 def main():
     # take protein aln file in CSA format from caprasingh08 dataset
     parser = argparse.ArgumentParser(description="produce dn/ds output from simple aln file")
-    parser.add_argument('fnames_in', nargs="+",
+    parser.add_argument('fnames_in', nargs="*",
         help="input files in any format")
+    parser.add_argument('-i', dest='prot_id', type=str, default=None,
+        help="protein id of sequence of interest")
     parser.add_argument('-o', dest='dirname_out', type=str, default=None,
         help="output directory. Defaults to new directory in folder of first positional argument")
     parser.add_argument('-n', dest='n_bootstrap', type=int, default=1,
@@ -202,8 +206,9 @@ def main():
         help="run codeML on all bootstrap trees, and analyze the resulting dnds distribution per site")
     args = parser.parse_args()
     
-    singlerun = SingleRun(args.fnames_in, args.dirname_out, args.analyze_bootstrap)
-    singlerun.preprocess(args.n_bootstrap, args.analyze_bootstrap)
+    singlerun = SingleRun(args.fnames_in, args.prot_id, args.dirname_out,
+            args.n_bootstrap, args.analyze_bootstrap)
+    singlerun.preprocess()
     singlerun.process()
 
 
