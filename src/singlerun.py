@@ -1,56 +1,80 @@
+#!/usr/bin/python
+"""
+Workflow for running codeml given any set of input data files.
+"""
+import argparse
 import os
-from preprocess import *
+from preprocess import (fetch_homologs, fetch_seqs, run_clustalw2, run_pal2nal,
+                        run_phyml, convert_maintree, convert_boottrees,
+                        make_ctl)
+from utils import ts_str
+
+
+AUTOMATIC = "AUTOMATIC"
 
 
 class SingleRun(object):
 
-    def __init__(self, fnames_in, dirname_out):
+    def __init__(self, fnames_in, dirname_out, analyze_bootstrap):
         """
         Categorize input files and create the appropriate output directory,
         stored at `self.dirname_out`.
 
-        Input:
-            fnames_in - absolute paths of input files
+        @param fnames_in:
+            absolute paths of input files
         """
-        inputs = ('gbid', 'homolog_gbids',
-                  'homolog_nucs', 'homolog_aas',
-                  'aa_aln', 'codon_aln',
-                  'tree', 'bootstrap_trees',
-                  'ctl')
+        inputs = ('homolog_gbids',
+                  'homolog_nucs', 'homolog_aas', 'aa_aln',
+                  'codon_aln',
+                  'tree', 'boot_trees',
+                  'ctl_template')
         inputs = dict((inp, None) for inp in inputs)
 
         for fname_in in fnames_in:
             # Use filename to determine what input type it is
             # TODO: Open up file to sanity check inputs, and provide greater flexibility
-            if fname_in.endswith(".ctl"):
-                if inputs['ctl']:
-                    raise ValueError("Duplicate ctl files")
-                inputs['ctl'] = fname_in
-            elif fname_in.endswith("tree.txt"):
-                if inputs['tree']:
-                    raise ValueError("Duplicate tree files")
-                inputs['tree'] = fname_in
-            elif fname_in.endswith("trees.txt"):
-                if inputs['bootstrap_trees']:
-                    raise ValueError("Duplicate bootstrap tree files")
-                inputs['bootstrap_trees'] = fname_in
+            if fname_in.endswith(".gibds"):
+                if inputs['homolog_gbids']:
+                    raise ValueError("Duplicate lists of gbids")
+                inputs['homolog_gbids'] = fname_in
+            # TODO: homolog_nucs, homolog_aas, aa_aln
             elif fname_in.endswith(".aln"):
                 if inputs['codon_aln']:
                     raise ValueError("Duplicate codon alignment files")
                 inputs['codon_aln'] = fname_in
-            elif fname_in.endswith(".gibds"):
-                if inputs['homolog_gbids']:
-                    raise ValueError("Duplicate lists of gbids")
-                inputs['homolog_gbids'] = fname_in
+            elif fname_in.endswith("_tree.txt"):
+                if inputs['tree']:
+                    raise ValueError("Duplicate tree files")
+                if inputs['boot_trees']:
+                    raise ValueError("Do not provide both tree and bootstrap trees")
+                inputs['tree'] = fname_in
+            elif fname_in.endswith("_trees.txt"):
+                if inputs['boot_trees']:
+                    raise ValueError("Duplicate bootstrap tree files")
+                if inputs['tree']:
+                    raise ValueError("Do not provide both tree and bootstrap trees")
+                inputs['boot_trees'] = fname_in
+            elif fname_in.endswith(".ctl"):
+                if inputs['ctl_template']:
+                    raise ValueError("Duplicate ctl template files")
+                inputs['ctl_template'] = fname_in
             else:
                 raise NotImplementedError()
+
+        if analyze_bootstrap == AUTOMATIC:
+            if inputs['tree']:
+                analyze_bootstrap = False
+            elif inputs['boot_trees']:
+                analyze_bootstrap = True
+            else:
+                # If no tree provided, default to not analyzing bootstrap trees
+                analyze_bootstrap = False
 
         fnames_in = [os.abspath(fname_in) for fname_in in fnames_in]
         if not dirname_out:
             head, tail = os.path.split(fnames_in[0])
             os.chdir(head)
-            ts = datetime.datetime.now().strftime("%Y%m%d-%H%m%s")
-            dirname_out = ".".join(tail.split(".")[:-1]) + ts
+            dirname_out = ".".join(tail.split(".")[:-1]) + ts_str()
             dirname_out = os.abspath(dirname_out)
             if os.path.exists(dirname_out):
                 raise NotImplementedError()
@@ -67,6 +91,8 @@ class SingleRun(object):
         """
         os.chdir(self.dirname_out)
 
+        # TODO: Check that files are coordinated with each other, i.e. contain the
+        #       same sequences, etc
         def _check_homolog_gbids():
             if not self.inputs['homolog_gbids']:
                 if not self.inputs['gbid']:
@@ -82,20 +108,24 @@ class SingleRun(object):
         def _check_homolog_nucs():
             if not self.inputs['homolog_nucs']:
                 if not self.inputs['homolog_gbids']:
+                    # BLAST search
+                    raise NotImplementedError()
                     _check_homolog_gbids()
                 else:
                     # UNIPROT search
-                    self.inputs['homolog_nucs'], a = fetch_seqs(self.inputs['homolog_gbids']
+                    self.inputs['homolog_nucs'], a = fetch_seqs(self.inputs['homolog_gbids'])
                     if self.inputs['homolog_aas']:
                         sys.stderr.write("Overwriting input homolog_aas\n")
                         self.inputs['homolog_aas'] = a
         def _check_homolog_aas():
             if not self.inputs['homolog_aas']:
                 if not self.inputs['homolog_gbids']:
+                    # BLAST search
+                    raise NotImplementedError()
                     _check_homolog_gbids()
                 else:
                     # UNIPROT search
-                    a, self.inputs['homolog_aas'] = fetch_seqs(self.inputs['homolog_gbids']
+                    a, self.inputs['homolog_aas'] = fetch_seqs(self.inputs['homolog_gbids'])
                     if self.inputs['homolog_nucs']:
                         sys.stderr.write("Overwriting input homolog_nucs\n")
                         self.inputs['homolog_nucs'] = a
@@ -105,31 +135,65 @@ class SingleRun(object):
                 self.inputs['aa_aln'] = run_clustalw(self.inputs['homolog_aas'])
         def _check_codon_aln():
             if not self.inputs['codon_aln']:
-                _check_aa_aln()
                 _check_homolog_nucs()
+                _check_aa_aln()
                 self.inputs['codon_aln'] = run_pal2nal(
                         self.inputs['aa_aln'], self.inputs['homolog_nucs'])
         def _check_tree():
             if not self.inputs['tree']:
                 _check_aa_aln()
-                self.inputs['tree'] = run_phyml(self.inputs['aa_aln'], n_boostrap)
+                self.inputs['tree'], _ = run_phyml(self.inputs['aa_aln'], n_bootstrap)
+        def _check_boot_trees():
+            if not self.inputs['boot_trees']:
+                _check_aa_aln()
+                _, self.inputs['boot_trees'] = run_phyml(self.inputs['aa_aln'], n_bootstrap)
 
-        if analyze_bootstrap:
-            x
+        _check_codon_aln()
+        if not analyze_bootstrap:
+            _check_tree()
+            self.bootstrap = False
+            # Get rid of confidences in tree
+            fname_tree = convert_maintree(self.inputs['tree'])
+            # Generate ctl file.
+            self.ctl = make_ctl(self.inputs['codon_aln'], fname_tree,
+                    self.inputs["ctl_template"])
+        else:
+            _check_boot_trees()
+            self.bootstrap = True
+            # Split up bootstrap trees
+            fname_trees = convert_boottrees(self.inputs['boot_trees'])
+            # Generate ctl file.
+            self.ctls = []
+            for fname_tree in fname_trees:
+                self.ctls.append(make_ctl(self.inputs['codon_aln'], fname_tree,
+                        self.inputs["ctl_template"]))
 
-        if not self.inputs['ctl']:
-            if not self.inputs['tree']:
-                x
 
-            self.inputs['ctl'] = make_ctl()
+    def process(self):
+        print "Run the following--"
+        print "chdir %s" % self.dirname_out
+        print "%s/../idea-2.5.1/idea" % bin_dir()
+        print "Then go to File > Load configuration > codonml.ctl"
+        print "I think."
 
 
-        # TODO: the preprocessing can kind of be done in parallel
-        fname_nuc = fetch_nuc(fname_aln)
-        fname_codon = run_pal2nal(fname_aln, fname_nuc)
-        fname_tree = run_phyml(fname_aln, n_bootstrap)
-        fname_ctl = make_ctl(fname_codon, fname_tree)
-        run_codeml(fname_ctl)
+def main():
+    # take protein aln file in CSA format from caprasingh08 dataset
+    parser = argparse.ArgumentParser(description="produce dn/ds output from simple aln file")
+    parser.add_argument('fnames_in', nargs="+",
+        help="input files in any format")
+    parser.add_argument('-o', dest='dirname_out', type=str, default=None,
+        help="output directory. Defaults to new directory in folder of first positional argument")
+    parser.add_argument('-n', dest='n_bootstrap', type=int, default=1,
+        help="number of bootstrapped trees. Defaults to 1")
+    parser.add_argument('-b', dest='analyze_boostrap', action='store_true', default=AUTOMATIC,
+        help="run codeML on all bootstrap trees, and analyze the resulting dnds distribution per site")
+    args = parser.parse_args()
+    
+    singlerun = SingleRun(args.fnames_in, args.dirname_out)
+    singlerun.preprocess(args.n_boostrap, args.analyze_boostrap)
+    singlerun.process()
 
-    def _preprocess_codon_aln(self):
-        pass
+
+if __name__ == "__main__":
+    main()
