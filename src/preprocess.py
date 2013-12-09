@@ -4,15 +4,33 @@ from Bio import Entrez
 from Bio import SeqIO
 
 
+def fetch_homologs(fname_gbid):
+    """
+    @param fname_gbid:
+        File containing the genbank id to get homologs for.
+    @return:
+        (homologs_file, nucs_file, aas_file) = File containing a list of gbids
+        of homologs for the input id, FASTA file containing nucleotide sequences,
+        FASTA file containing aa sequences.
+        The first entry in each file should be the input gbid in the appropriate format.
+    """
+    #TODO
+    pass
+
+
 Entrez.email = "ldiao@princeton.edu"
-def fetch_nuc(fname_aln):
+def fetch_seqs(fname_gbids):
     """
-    PREPROCESSING
-    Input:
-        fname_aln = protein alignment either in CLUSTAL or FASTA format
-    Output:
-        fname_nuc = nucleotides for each sequence in the protein alignment
+    Fetch the NUC and AA sequences for the genbank IDs listed in fname_gbids.
+    
+    @param fname_gbids:
+        File containing list of genbank ids of homologs to get sequence data for.
+        Each line contains 1 id.
+    @return:
+        (nuc_file, aa_file) = 2 FASTA files containing nucleotide and amino acid
+        sequences, respectively, of the ids in fname_gbids
     """
+    #TODO
     sys.stderr.write("\nSTEP: fetch_nuc(%s)\n" % fname_aln)
 
 	with open(fname_aln, 'r') as f:
@@ -25,14 +43,15 @@ def fetch_nuc(fname_aln):
 
 def run_pal2nal(fname_aln, fname_nuc):
     """
-    PREPROCESSING
-    Input:
-        fname_aln = protein alignment either in CLUSTAL or FASTA format
-        fname_nuc = DNA sequences (single multi-fasta or separated files)
-    Output:
-        fname_codon = codon delimited alignment, suitable for codeml
+    Generate a codon alignment via PAL2NAL.
+
+    @param fname_aln:
+        protein alignment either in CLUSTAL or FASTA format
+    @param fname_nuc:
+        Nucleotide data for sequences in alignment (single multi-fasta or separated files)
+    @return:
+        Clustal file (.aln) containing codon delimited alignment, suitable for codeml.
     """
-    # TODO: the output should be treated as tmp files
     sys.stderr.write("\nSTEP: run_pal2nal(%s, %s)\n" % (fname_aln, fname_nuc))
     fname_codon = ".".join(fname_aln.split(".")[:-1]) + ".codon.nuc"
     os.system("pal2nal.pl %s %s --output paml > %s" % (fname_aln, fname_nuc, fname_codon))
@@ -41,14 +60,13 @@ def run_pal2nal(fname_aln, fname_nuc):
 
 def run_phyml(fname_aln, n_bootstrap):
     """
-    PREPROCESSING
-    Input:
-        fname_aln = protein alignment either in CLUSTAL or FASTA format
-    Output:
-        fname_tree = phylo tree with clade confidences
-        TODO: bootstrapped tree fnames?
+    Generate a phylogenetic tree via PHYML.
+
+    @param fname_aln:
+        protein alignment either in CLUSTAL or FASTA format
+    @return:
+        (tree_file, bootstrap_file) = File of phylo tree with clade confidences
     """
-    # TODO: the output should be treated as tmp files
     sys.stderr.write("\nSTEP: run_phyml(%s, %s)\n" % (fname_aln, n_bootstrap))
     fname_phy = ".".join(fname_aln.split(".")[:-1]) + ".phy"
     with open(fname_aln, "rU") as f_in:
@@ -59,7 +77,18 @@ def run_phyml(fname_aln, n_bootstrap):
     return fname_tree
 
 
-def make_ctl(fname_nuc, fname_tree):
+def make_ctl(fname_codon, fname_tree):
+    """
+    Generate the PAML config file.
+
+    @param fname_nuc:
+        codon ailgnment file to analyze
+    @param fname_tree:
+        phylogenetic tree file to analyze
+    @return:
+        Config file
+    """
+    # TODO: need to get rid of clade confidences in tree file
     sys.stderr.write("\nSTEP: make_ctl(%s, %s)\n" % (fname_nuc, fname_tree)
     fname_ctl = ".".join(fname_nuc.split(".")[:-1]) + ".ctl"
     with open(fname_nuc, "w") as fw:
@@ -74,6 +103,7 @@ def make_ctl(fname_nuc, fname_tree):
 
 def run_codeml(fname_ctl):
     """
+    XXX
     Input:
         fname_ctl
     Output:

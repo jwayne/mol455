@@ -13,7 +13,7 @@ class SingleRun(object):
             fnames_in - absolute paths of input files
         """
         inputs = ('gbid', 'homolog_gbids',
-                  'nuc_seqs', 'aa_seqs',
+                  'homolog_nucs', 'homolog_aas',
                   'aa_aln', 'codon_aln',
                   'tree', 'bootstrap_trees',
                   'ctl')
@@ -23,13 +23,25 @@ class SingleRun(object):
             # Use filename to determine what input type it is
             # TODO: Open up file to sanity check inputs, and provide greater flexibility
             if fname_in.endswith(".ctl"):
+                if inputs['ctl']:
+                    raise ValueError("Duplicate ctl files")
                 inputs['ctl'] = fname_in
             elif fname_in.endswith("tree.txt"):
+                if inputs['tree']:
+                    raise ValueError("Duplicate tree files")
                 inputs['tree'] = fname_in
             elif fname_in.endswith("trees.txt"):
+                if inputs['bootstrap_trees']:
+                    raise ValueError("Duplicate bootstrap tree files")
                 inputs['bootstrap_trees'] = fname_in
             elif fname_in.endswith(".aln"):
+                if inputs['codon_aln']:
+                    raise ValueError("Duplicate codon alignment files")
                 inputs['codon_aln'] = fname_in
+            elif fname_in.endswith(".gibds"):
+                if inputs['homolog_gbids']:
+                    raise ValueError("Duplicate lists of gbids")
+                inputs['homolog_gbids'] = fname_in
             else:
                 raise NotImplementedError()
 
@@ -55,15 +67,52 @@ class SingleRun(object):
         """
         os.chdir(self.dirname_out)
 
-        if not self.inputs['codon_aln']:
+        def _check_homolog_gbids():
+            if not self.inputs['homolog_gbids']:
+                if not self.inputs['gbid']:
+                    raise ValueError("No input sequence ids provided")
+                # BLAST search
+                self.inputs['homolog_gbids'], a, b = fetch_homologs(self.inputs['gbid'])
+                if self.inputs['homolog_nucs']:
+                    sys.stderr.write("Overwriting input homolog_nucs\n")
+                    self.inputs['homolog_nucs'] = a
+                if self.inputs['homolog_aas']:
+                    sys.stderr.write("Overwriting input homolog_aas\n")
+                    self.inputs['homolog_aas'] = b
+        def _check_homolog_nucs():
+            if not self.inputs['homolog_nucs']:
+                if not self.inputs['homolog_gbids']:
+                    _check_homolog_gbids()
+                else:
+                    # UNIPROT search
+                    self.inputs['homolog_nucs'], a = fetch_seqs(self.inputs['homolog_gbids']
+                    if self.inputs['homolog_aas']:
+                        sys.stderr.write("Overwriting input homolog_aas\n")
+                        self.inputs['homolog_aas'] = a
+        def _check_homolog_aas():
+            if not self.inputs['homolog_aas']:
+                if not self.inputs['homolog_gbids']:
+                    _check_homolog_gbids()
+                else:
+                    # UNIPROT search
+                    a, self.inputs['homolog_aas'] = fetch_seqs(self.inputs['homolog_gbids']
+                    if self.inputs['homolog_nucs']:
+                        sys.stderr.write("Overwriting input homolog_nucs\n")
+                        self.inputs['homolog_nucs'] = a
+        def _check_aa_aln():
             if not self.inputs['aa_aln']:
-                if not self.inputs['aa_']:
-                    x
-            
-
-        if not self.inputs['tree']:
-            a
-
+                _check_homolog_aas()
+                self.inputs['aa_aln'] = run_clustalw(self.inputs['homolog_aas'])
+        def _check_codon_aln():
+            if not self.inputs['codon_aln']:
+                _check_aa_aln()
+                _check_homolog_nucs()
+                self.inputs['codon_aln'] = run_pal2nal(
+                        self.inputs['aa_aln'], self.inputs['homolog_nucs'])
+        def _check_tree():
+            if not self.inputs['tree']:
+                _check_aa_aln()
+                self.inputs['tree'] = run_phyml(self.inputs['aa_aln'], n_boostrap)
 
         if analyze_bootstrap:
             x
