@@ -11,6 +11,8 @@ import sys
 from Bio import Entrez
 from Bio import Phylo
 from Bio import SeqIO
+from Bio.Blast.NCBIWWW import qblast
+from Bio.Blast import NCBIXML
 from utils import ts_str, bin_dir
 
 
@@ -24,8 +26,24 @@ def fetch_homologs(gb_id):
         FASTA file containing aa sequences.
         The first entry in each file should be the input gbid in the appropriate format.
     """
-    raise NotImplementedError()
+    sys.stderr.write("\nSTEP: fetch homologs(%s)\n" % gb_id)
+    
+    blast_res = qblast("blastn", "nr", gb_id)
+    blast_nr = NCBIXML.read(blast_res)
 
+    gbids = [alignment.accession for alignment in blast_nr.alignments]
+
+    fname_gbids = "homologs.gbids"
+    
+    if os.path.exists(fname_gbids):
+        raise Exception("File %s aleady exists" % (fname_gbids))
+
+    with open(fname_gbids, 'w') as f:
+        for gbid in gbids:
+            f.write(gbid + '\n')
+
+    return fname_gbids
+        
 
 Entrez.email = "ldiao@princeton.edu"
 def fetch_seqs(fname_gb_ids):
@@ -39,14 +57,13 @@ def fetch_seqs(fname_gb_ids):
         (fname_nuc, fname_aa) = 2 FASTA files containing nucleotide and amino acid
         sequences, respectively, of the ids in fname_gbids
     """
-    #TODO
     sys.stderr.write("\nSTEP: fetch_seqs(%s)\n" % fname_gb_ids)
 
     with open(fname_gb_ids, 'r') as f:
         gb_ids = [line.strip() for line in f if line.strip()]
     
     fname_nuc = "nucleotides.fasta"
-    fname_aa = "amino_acids.fasta"
+    fname_aa = "proteins.fasta"
 
     if os.path.exists(fname_nuc) or os.path.exists(fname_aa):
         raise Exception("File %s and/or %s already exists" % (fname_nuc, fname_aa))
@@ -199,7 +216,8 @@ def run_codeml(fname_ctl):
     # TODO: redirect output into more sensible format
 
 def main():
-    fetch_seqs(sys.argv[1])
+    homologs = fetch_homologs(sys.argv[1])
+    fetch_seqs(homologs) 
 
 if __name__ == "__main__":
     main()
