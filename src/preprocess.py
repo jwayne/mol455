@@ -7,6 +7,7 @@ you are in a directory you're OK with making a lot of new files in before
 running them.
 """
 import os
+import re
 import sys
 from Bio import Entrez
 from Bio import Phylo
@@ -16,88 +17,124 @@ from Bio.Blast import NCBIXML
 from utils import ts_str, bin_dir
 
 
-def fetch_homologs(gb_id):
+def fetch_homologs(prot_id):
     """
-    @param gb_id:
-        The genbank id to get homologs for.
+    @param prot_id:
+        The protein genbank id to get homologs for.
     @return:
-        (homologs_file, nucs_file, aas_file) = File containing a list of gbids
-        of homologs for the input id, FASTA file containing nucleotide sequences,
-        FASTA file containing aa sequences.
-        The first entry in each file should be the input gbid in the appropriate format.
+        List of genbank ids of protein homologs.
     """
-    sys.stderr.write("\nSTEP: fetch homologs(%s)\n" % gb_id)
+    sys.stderr.write("\nSTEP: fetch homologs(%s)\n" % prot_id)
     
-    blast_res = qblast("blastn", "nr", gb_id)
+    blast_res = qblast("blastp", "nr", prot_id)
     blast_nr = NCBIXML.read(blast_res)
 
-    gbids = [alignment.accession for alignment in blast_nr.alignments]
+    prot_ids = [alignment.accession for alignment in blast_nr.alignments]
 
-    fname_gbids = "homologs.gbids"
-    
-    if os.path.exists(fname_gbids):
-        raise Exception("File %s aleady exists" % (fname_gbids))
-
-    with open(fname_gbids, 'w') as f:
-        for gbid in gbids:
-            f.write(gbid + '\n')
-
-    return fname_gbids
+    fname_prot_ids = "homologues.protids"
+    if os.path.exists(fname_prot_ids):
+        raise Exception("File %s aleady exists" % (fname_prot_ids))
+    with open(fname_prot_ids, 'w') as f:
+        for prot_id in prot_ids:
+            f.write(prot_id + '\n')
+    return fname_prot_ids
         
 
 Entrez.email = "ldiao@princeton.edu"
-def fetch_seqs(fname_gb_ids):
+pat_complement = re.compile(r"complement\((.*)\)")
+
+def fetch_seqs(fname_prot_ids):
     """
-    Fetch the NUC and AA sequences for the genbank IDs listed in fname_gbids.
+    Fetch the NUC and AA sequences for the genbank IDs in the input.
     
-    @param fname_gb_ids:
-        File containing list of genbank ids of homologs to get sequence data for.
+    @param fname_prot_ids:
+        File containing list of protein genbank ids of homologs to get sequence data for.
         Each line contains 1 id.
     @return:
-        (fname_nuc, fname_aa) = 2 FASTA files containing nucleotide and amino acid
-        sequences, respectively, of the ids in fname_gbids
+        (fname_nuc, fname_prot) = 2 FASTA files containing nucleotide and amino acid
+        sequences, respectively, of the ids in fname_prot_ids
     """
-    sys.stderr.write("\nSTEP: fetch_seqs(%s)\n" % fname_gb_ids)
+    sys.stderr.write("\nSTEP: fetch_seqs(%s)\n" % fname_prot_ids)
 
-    with open(fname_gb_ids, 'r') as f:
-        gb_ids = [line.strip() for line in f if line.strip()]
+    with open(fname_prot_ids, 'r') as f:
+        prot_ids = [line.strip() for line in f if line.strip()]
     
+    fname_prot = "proteins.fasta"
     fname_nuc = "nucleotides.fasta"
-    fname_aa = "proteins.fasta"
+    if os.path.exists(fname_nuc) or os.path.exists(fname_prot):
+        raise Exception("File %s and/or %s already exists" % (fname_nuc, fname_prot))
 
-    if os.path.exists(fname_nuc) or os.path.exists(fname_aa):
-        raise Exception("File %s and/or %s already exists" % (fname_nuc, fname_aa))
+    f_prot = open(fname_prot, "w")
+    prot_handle = Entrez.efetch(
+        db="protein",
+        id=",".join(prot_ids),
+        rettype="gb"
+    )   
+    dna_metadata = []
+    for prot_record in SeqIO.parse(prot_handle, "gb"):
+        got_data = False
+        # Get id and ends of DNA sequence.
+        for feature in prot_record.features:
+            if feature.type == "CDS":
+                feature_data = feature.qualifiers['coded_by'][0]
+                got_data = True
+                match_complement = re.match(pat_complement, feature_data)
+                if match_complement:
+                    feature_data = match_complement.group(1)
+                dna_id, dna_positions = feature_data.split(":")
+                dna_start, dna_end = dna_positions.split("..")
+                dna_start = int(re.sub("[^0-9]","",dna_start))
+                dna_end = int(re.sub("[^0-9]","",dna_end))
+                dna_metadata.append((dna_id, dna_start, dna_end, match_complement))
+                break
+        if got_data:
+            SeqIO.write(prot_record, f_prot, "fasta")
+        else:
+            sys.stderr.write("Skipping protein %s due to no nucleotide sequence\n" % prot_record.id)
+    prot_handle.close()
+    f_prot.close()
 
-    with open(fname_nuc, 'w') as f_nuc:
-        with open(fname_aa, 'w') as f_aa:
-            nuc_records = SeqIO.parse(Entrez.efetch(db="nucleotide", id=','.join(gb_ids),
-                                                    rettype="fasta", retmode="text"), "fasta")
-            for record in nuc_records:
-                SeqIO.write(record, f_nuc, 'fasta')
-                record.seq = record.seq.translate()
-                SeqIO.write(record, f_aa, 'fasta')    
+    f_nuc = open(fname_nuc, "w")
+    # Fetch DNA sequence.
+    dna_handle = Entrez.efetch(
+        db="nucleotide",
+        id=",".join([dna_id for dna_id,_,_,_ in dna_metadata]),
+        rettype="fasta")
+    for dna_record, dna_md in zip(SeqIO.parse(dna_handle, "fasta"), dna_metadata):
+        dna_id, dna_start, dna_end, match = dna_md
+        # Get the correct range of nucleotides in the genome.
+        dna_record.seq = dna_record.seq[dna_start-1:dna_end]
+        if match_complement:
+            dna_record.seq = dna_record.seq.reverse_complement()
+        # Omit the stop codon.
+        if str(dna_record.seq[-3:]) in ('TAG', 'TAA', 'TGA'):
+            dna_record.seq = dna_record.seq[:-3]
+        # Write the data.
+        SeqIO.write(dna_record, f_nuc, "fasta")
+    dna_handle.close()
+    f_nuc.close()
 
-    return (fname_nuc, fname_aa)
+    return (fname_nuc, fname_prot)
 
 
-def run_clustalw2(fname_aas):
+def run_clustalw2(fname_prot):
     """
     Generate a MSA of the amino acids (in fasta format) via clustalw.
 
-    @param fname_aas:
+    @param fname_prot:
         Protein sequences in FASTA format (.fasta)
     @return:
         MSA of protein sequences in CLUSTAL format (.aln)
     """
-    sys.stderr.write("\nSTEP: run_clustalw2(%s)\n" % fname_aas)
+    sys.stderr.write("\nSTEP: run_clustalw2(%s)\n" % fname_prot)
     # Note: clustalw2 is assumed to have already been installed. We can change
     # this assumption by adding clustalw2 to bin/
-    os.system("clustalw2 %s" % fname_aas)
-    fname_aln = ".".join(fname_aas.split(".")[:-1]) + ".aln"
+    os.system("clustalw2 %s" % fname_prot)
+    fname_aln = ".".join(fname_prot.split(".")[:-1]) + ".aln"
     return fname_aln
 
 
-def run_pal2nal(fname_aln, fname_nuc):
+def run_pal2nal(fname_aln, fname_nuc, fname_prot):
     """
     Generate a codon alignment via PAL2NAL.
 
@@ -105,19 +142,24 @@ def run_pal2nal(fname_aln, fname_nuc):
         MSA of protein sequences in CLUSTAL format (.aln)
     @param fname_nuc:
         Nucleotide sequences in FASTA format (.fasta)
+    @param fname_prot:
+        Protein sequences in FASTA format (.fasta)
     @return:
         Codon alignment in CLUSTAL format (.aln), suitable for codeml
     """
     sys.stderr.write("\nSTEP: run_pal2nal(%s, %s)\n" % (fname_aln, fname_nuc))
-    records = {}
-    for record in SeqIO.parse(fname_nuc, "fasta"):
-        records[record.id.split("|")[3]] = record
+
+    # Reorder fname_nuc according to the order of the proteins in fname_aln, which
+    # was reordered due to CLUSTALW2.  Note that the first protein in each of
+    # these files remains the same as at the start, however; this first protein
+    # is our original query protein.
+    nuc_records = [record for record in SeqIO.parse(fname_nuc, "fasta")]
+    prot_records = [record for record in SeqIO.parse(fname_prot, "fasta")]
+    records_map = dict((pr.id, nr) for pr, nr in zip(prot_records, nuc_records))
     fname_nuc2 = "nucleotides2.fasta"
     with open(fname_nuc2, "w") as f:
         for record in SeqIO.parse(fname_aln, "clustal"):
-            SeqIO.write(records[record.id.split("|")[3]], f, "fasta")
-    import ipdb
-    ipdb.set_trace()
+            SeqIO.write(records_map[record.id], f, "fasta")
     fname_codon = "codons.aln"
     os.system("%s/pal2nal.pl %s %s -output paml > %s" %
             (bin_dir(), fname_aln, fname_nuc2, fname_codon))
@@ -233,8 +275,9 @@ def run_codeml(fname_ctl):
     # TODO: redirect output into more sensible format
 
 def main():
-    homologs = fetch_homologs(sys.argv[1])
-    fetch_seqs(homologs) 
+    #homologs = fetch_homologs(sys.argv[1])
+    #fetch_seqs(homologs) 
+    fetch_seqs(sys.argv[1])
 
 if __name__ == "__main__":
     main()
