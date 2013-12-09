@@ -62,6 +62,7 @@ def fetch_seqs(fname_gb_ids):
 
     return (fname_nuc, fname_aa)
 
+
 def run_clustalw2(fname_aas):
     """
     Generate a MSA of the amino acids (in fasta format) via clustalw.
@@ -71,6 +72,7 @@ def run_clustalw2(fname_aas):
     @return:
         MSA of protein sequences in CLUSTAL format (.aln)
     """
+    sys.stderr.write("\nSTEP: run_clustalw2(%s)\n" % fname_aas)
     # Note: clustalw2 is assumed to have already been installed. We can change
     # this assumption by adding clustalw2 to bin/
     os.system("clustalw2 %s" % fname_aas)
@@ -90,9 +92,18 @@ def run_pal2nal(fname_aln, fname_nuc):
         Codon alignment in CLUSTAL format (.aln), suitable for codeml
     """
     sys.stderr.write("\nSTEP: run_pal2nal(%s, %s)\n" % (fname_aln, fname_nuc))
-    fname_codon = ".".join(fname_aln.split(".")[:-1]) + ".codon.nuc"
-    os.system("%s/pal2nal.pl %s %s --output paml > %s" %
-            (bin_dir(), fname_aln, fname_nuc, fname_codon))
+    records = {}
+    for record in SeqIO.parse(fname_nuc, "fasta"):
+        records[record.id.split("|")[3]] = record
+    fname_nuc2 = "nucleotides2.fasta"
+    with open(fname_nuc2, "w") as f:
+        for record in SeqIO.parse(fname_aln, "clustal"):
+            SeqIO.write(records[record.id.split("|")[3]], f, "fasta")
+    import ipdb
+    ipdb.set_trace()
+    fname_codon = "codons.aln"
+    os.system("%s/pal2nal.pl %s %s -output paml > %s" %
+            (bin_dir(), fname_aln, fname_nuc2, fname_codon))
     return fname_codon
 
 
@@ -111,9 +122,15 @@ def run_phyml(fname_aln, n_bootstrap):
     with open(fname_aln, "rU") as f_in:
         with open(fname_phy, "w") as f_out:
             SeqIO.convert(f_in, "clustal", f_out, "phylip-relaxed")
-    os.system("%s/phyml -i %s -d aa -b %d" % (bin_dir(), fname_phy, n_bootstrap))
+
     fname_tree = ".".join(fname_aln.split(".")[:-1]) + ".phy_phyml_tree.txt"
-    fname_boot_trees = ".".join(fname_aln.split(".")[:-1]) + ".phy_phyml_boot_trees.txt"
+    if n_bootstrap > 1:
+        bootstrap_str = " -b %d" % n_bootstrap
+        fname_boot_trees = ".".join(fname_aln.split(".")[:-1]) + ".phy_phyml_boot_trees.txt"
+    else:
+        bootstrap_str = ""
+        fname_boot_trees = None
+    os.system("%s/phyml -i %s -d aa%s" % (bin_dir(), fname_phy, bootstrap_str))
     return fname_tree, fname_boot_trees
 
 
@@ -161,7 +178,7 @@ def make_ctl(fname_codon, fname_tree, ctl_template=None):
     if not ctl_template:
         ctl_template = CTL_TEMPLATE
     sys.stderr.write("\nSTEP: make_ctl(%s, %s)\n" % (fname_codon, fname_tree))
-    fname_ctl = ts_str() + ".ctl"
+    fname_ctl = "codonml.ctl"
     wrote_seqfile = False
     wrote_treefile = False
     with open(fname_ctl, "w") as fw:
@@ -170,12 +187,12 @@ def make_ctl(fname_codon, fname_tree, ctl_template=None):
                 if line.strip().startswith("seqfile"):
                     if wrote_seqfile:
                         raise ValueError("Bad ctl template file; multiple seqfile lines")
-                    fw.write("seqfile = " + fname_codon)
+                    fw.write("seqfile = %s\n" % fname_codon)
                     wrote_seqfile = True
                 elif line.strip().startswith("treefile"):
                     if wrote_treefile:
                         raise ValueError("Bad ctl template file; multiple treefile lines")
-                    fw.write("treefile = " + fname_tree)
+                    fw.write("treefile = %s\n" % fname_tree)
                     wrote_treefile = True
                 else:
                     fw.write(line)
