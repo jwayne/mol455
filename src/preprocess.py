@@ -160,7 +160,7 @@ def make_ctl(fname_codon, fname_tree, ctl_template=None):
     """
     if not ctl_template:
         ctl_template = CTL_TEMPLATE
-    sys.stderr.write("\nSTEP: make_ctl(%s, %s)\n" % (fname_codon, fname_tree)
+    sys.stderr.write("\nSTEP: make_ctl(%s, %s)\n" % (fname_codon, fname_tree))
     fname_ctl = ts_str() + ".ctl"
     wrote_seqfile = False
     wrote_treefile = False
