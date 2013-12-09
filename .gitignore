@@ -13,6 +13,7 @@ lnf
 2NG.t
 4fold.nuc
 res
+*.log
 
 #python
 *.pyc
@@ -39,3 +40,7 @@ res
 # Compiled codeml
 paml4.7a/src/codeml
 bin/codeml
+
+# Tmp files
+*.swp
+*.swo
