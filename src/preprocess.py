@@ -40,17 +40,16 @@ def fetch_seqs(fname_gb_ids):
     fname_aa = "amino_acids.fasta"
 
     if os.path.exists(fname_nuc) or os.path.exists(fname_aa):
-        raise FileExistsError()
+        raise Exception("File %s and/or %s already exists" % (fname_nuc, fname_aa))
 
-    with open(fname_nuc, 'w') as f:
-        nuc_records = SeqIO.parse(Entrez.efetch(db="nucleotide", id=','.join(gb_ids),
-                                                rettype="fasta", retmode="text"), "fasta")
-        SeqIO.write(nuc_records, f, 'fasta'
-)
-    with open(fname_aa, 'w') as f:
-        aa_records = SeqIO.parse(Entrez.efetch(db="protein", id=','.join(gb_ids),
-                                               rettype="fasta", retmode="text"), "fasta")
-        SeqIO.write(aa_records, f, 'fasta')
+    with open(fname_nuc, 'w') as f_nuc:
+        with open(fname_aa, 'w') as f_aa:
+            nuc_records = SeqIO.parse(Entrez.efetch(db="nucleotide", id=','.join(gb_ids),
+                                                    rettype="fasta", retmode="text"), "fasta")
+            for record in nuc_records:
+                SeqIO.write(record, f_nuc, 'fasta')
+                record.seq = record.seq.translate()
+                SeqIO.write(record, f_aa, 'fasta')    
 
     return (fname_nuc, fname_aa)
 
