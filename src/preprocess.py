@@ -220,7 +220,7 @@ def convert_boottrees(fname_trees):
     return out_fnames
 
 
-CTL_TEMPLATE = os.path.join(os.path.dirname(__file__), "codonml.ctl")
+CTL_TEMPLATE = os.path.join(os.path.dirname(__file__), "codonml_template.ctl")
 def make_ctl(fname_codon, fname_tree, ctl_template=None):
     """
     Generate the PAML config file.
