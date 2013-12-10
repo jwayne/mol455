@@ -27,8 +27,8 @@ class SingleRun(object):
         if not fnames_in and not prot_id_in:
             raise ValueError("No input files provided")
 
-        inputs = ('prot_id', 'homologue_protids',
-                  'nucs_fasta', 'prots_fasta',
+        inputs = ('prot_id', 'prot_ids',
+                  'dna_fasta', 'aa_fasta',
                   'prots_aln', 'codons_aln',
                   'tree', 'boot_trees',
                   'ctl_template')
@@ -41,19 +41,18 @@ class SingleRun(object):
         for fname_in in fnames_in:
             # Use filename to determine what input type it is
             # TODO: Open up file to sanity check inputs, and provide greater flexibility
-            fname_part = os.path.split(fname_in)[-1]
             if fname_in.endswith(".protids"):
-                if inputs['homologue_protids']:
+                if inputs['prot_ids']:
                     raise ValueError("Duplicate lists of prot_ids")
-                inputs['homologue_protids'] = fname_in
-            elif fname_part == "nucleotides.fasta":
-                if inputs['nucs_fasta']:
+                inputs['prot_ids'] = fname_in
+            elif fname_in.endswith(".dna.fasta"):
+                if inputs['dna_fasta']:
                     raise ValueError("Duplicate nucleotide sequence files")
-                inputs['nucs_fasta'] = fname_in
-            elif fname_part == "proteins.fasta":
-                if inputs['prots_fasta']:
+                inputs['dna_fasta'] = fname_in
+            elif fname_in.endswith(".aa.fasta"):
+                if inputs['aa_fasta']:
                     raise ValueError("Duplicate protein sequence files")
-                inputs['prots_fasta'] = fname_in
+                inputs['aa_fasta'] = fname_in
             elif fname_part == "proteins.aln":
                 if inputs['prots_aln']:
                     raise ValueError("Duplicate protein alignment files")
@@ -118,41 +117,43 @@ class SingleRun(object):
         These inputs are stored in `self.dirname_out`.
         """
         os.chdir(self.dirname_out)
+        import ipdb
+        ipdb.set_trace()
 
         # TODO: Check that files are coordinated with each other, i.e. contain the
         #       same sequences, etc
-        def _check_homologue_protids():
-            if not self.inputs['homologue_protids']:
+        def _check_prot_ids():
+            if not self.inputs['prot_ids']:
                 if not self.inputs['prot_id']:
                     raise ValueError("No input sequence ids provided")
                 # BLAST search
-                self.inputs['homologue_protids'] = fetch_homologs(self.inputs['prot_id'])
-        def _check_nucs_fasta():
-            if not self.inputs['nucs_fasta']:
-                _check_homologue_protids()
+                self.inputs['prot_ids'] = fetch_homologs(self.inputs['prot_id'])
+        def _check_dna_fasta():
+            if not self.inputs['dna_fasta']:
+                _check_prot_ids()
                 # UNIPROT search
-                self.inputs['nucs_fasta'], a = fetch_seqs(self.inputs['homologue_protids'])
-                if self.inputs['prots_fasta']:
-                    sys.stderr.write("Overwriting input prots_fasta\n")
-                self.inputs['prots_fasta'] = a
-        def _check_prots_fasta():
-            if not self.inputs['prots_fasta']:
-                _check_homologue_protids()
+                self.inputs['dna_fasta'], a = fetch_seqs(self.inputs['prot_ids'])
+                if self.inputs['aa_fasta']:
+                    sys.stderr.write("Overwriting input aa_fasta\n")
+                self.inputs['aa_fasta'] = a
+        def _check_aa_fasta():
+            if not self.inputs['aa_fasta']:
+                _check_prot_ids()
                 # UNIPROT search
-                a, self.inputs['prots_fasta'] = fetch_seqs(self.inputs['homologue_protids'])
-                if self.inputs['nucs_fasta']:
-                    sys.stderr.write("Overwriting input nucs_fasta\n")
-                self.inputs['nucs_fasta'] = a
+                a, self.inputs['aa_fasta'] = fetch_seqs(self.inputs['prot_ids'])
+                if self.inputs['dna_fasta']:
+                    sys.stderr.write("Overwriting input dna_fasta\n")
+                self.inputs['dna_fasta'] = a
         def _check_prots_aln():
             if not self.inputs['prots_aln']:
-                _check_prots_fasta()
-                self.inputs['prots_aln'] = run_clustalw2(self.inputs['prots_fasta'])
+                _check_aa_fasta()
+                self.inputs['prots_aln'] = run_clustalw2(self.inputs['aa_fasta'])
         def _check_codons_aln():
             if not self.inputs['codons_aln']:
-                _check_nucs_fasta()
+                _check_dna_fasta()
                 _check_prots_aln()
                 self.inputs['codons_aln'] = run_pal2nal(self.inputs['prots_aln'],
-                        self.inputs['nucs_fasta'], self.inputs['prots_fasta'])
+                        self.inputs['dna_fasta'], self.inputs['aa_fasta'])
         def _check_tree():
             if not self.inputs['tree']:
                 _check_prots_aln()

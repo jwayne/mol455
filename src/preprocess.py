@@ -59,8 +59,8 @@ def fetch_seqs(fname_prot_ids):
     with open(fname_prot_ids, 'r') as f:
         prot_ids = [line.strip() for line in f if line.strip()]
     
-    fname_prot = "proteins.fasta"
-    fname_nuc = "nucleotides.fasta"
+    fname_prot = "homologues.aa.fasta"
+    fname_nuc = "homologues.dna.fasta"
     if os.path.exists(fname_nuc) or os.path.exists(fname_prot):
         raise Exception("File %s and/or %s already exists" % (fname_nuc, fname_prot))
 
@@ -156,11 +156,11 @@ def run_pal2nal(fname_aln, fname_nuc, fname_prot):
     nuc_records = [record for record in SeqIO.parse(fname_nuc, "fasta")]
     prot_records = [record for record in SeqIO.parse(fname_prot, "fasta")]
     records_map = dict((pr.id, nr) for pr, nr in zip(prot_records, nuc_records))
-    fname_nuc2 = "nucleotides2.fasta"
+    fname_nuc2 = "homologues_ordered.dna.fasta"
     with open(fname_nuc2, "w") as f:
         for record in SeqIO.parse(fname_aln, "clustal"):
             SeqIO.write(records_map[record.id], f, "fasta")
-    fname_codon = "codons.aln"
+    fname_codon = "homologues.codon.aln"
     os.system("%s/pal2nal.pl %s %s -output paml > %s" %
             (bin_dir(), fname_aln, fname_nuc2, fname_codon))
     return fname_codon
