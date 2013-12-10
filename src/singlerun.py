@@ -117,8 +117,6 @@ class SingleRun(object):
         These inputs are stored in `self.dirname_out`.
         """
         os.chdir(self.dirname_out)
-        import ipdb
-        ipdb.set_trace()
 
         # TODO: Check that files are coordinated with each other, i.e. contain the
         #       same sequences, etc
