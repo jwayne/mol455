@@ -7,3 +7,7 @@ def ts_str():
 def bin_dir():
     current_dir = os.path.dirname(__file__)
     return os.path.abspath(os.path.join(current_dir, "..", "bin"))
+
+def data_dir():
+    current_dir = os.path.dirname(__file__)
+    return os.path.abspath(os.path.join(current_dir, "..", "data"))
