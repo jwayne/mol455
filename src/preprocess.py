@@ -129,8 +129,8 @@ def run_clustalw2(fname_prot):
     sys.stderr.write("\nSTEP: run_clustalw2(%s)\n" % fname_prot)
     # Note: clustalw2 is assumed to have already been installed. We can change
     # this assumption by adding clustalw2 to bin/
-    os.system("clustalw2 %s" % fname_prot)
     fname_aln = ".".join(fname_prot.split(".")[:-1]) + ".aln"
+    os.system("clustalw2 -INFILE=%s -OUTFILE=%s" % (fname_prot, fname_aln))
     return fname_aln
 
 
