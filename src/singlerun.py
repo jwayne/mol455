@@ -53,21 +53,21 @@ class SingleRun(object):
                 if inputs['aa_fasta']:
                     raise ValueError("Duplicate protein sequence files")
                 inputs['aa_fasta'] = fname_in
-            elif fname_part == "proteins.aln":
+            elif fname_in.endswith(".aa.aln"):
                 if inputs['prots_aln']:
                     raise ValueError("Duplicate protein alignment files")
                 inputs['prots_aln'] = fname_in
-            elif fname_in.endswith(".aln"):
+            elif fname_in.endswith(".codon.aln"):
                 if inputs['codons_aln']:
                     raise ValueError("Duplicate codon alignment files")
                 inputs['codons_aln'] = fname_in
-            elif fname_in.endswith("_tree.txt"):
+            elif fname_in.endswith("_phyml_tree.txt"):
                 if inputs['tree']:
                     raise ValueError("Duplicate tree files")
                 if inputs['boot_trees']:
                     raise ValueError("Do not provide both tree and bootstrap trees")
                 inputs['tree'] = fname_in
-            elif fname_in.endswith("_trees.txt"):
+            elif fname_in.endswith("_phyml_trees.txt"):
                 if inputs['boot_trees']:
                     raise ValueError("Duplicate bootstrap tree files")
                 if inputs['tree']:
@@ -183,11 +183,18 @@ class SingleRun(object):
 
 
     def process(self):
-        print "Run the following--"
+        print ""
+        print "Preprocessing completed"
+        print ""
+        print "==How to run codeml=="
         print "cd %s" % self.dirname_out
-        print "%s/../idea-2.5.1/idea" % bin_dir()
-        print "Then go to File > Load configuration > codonml.ctl"
-        print "I think."
+        print "%s/codeml codonml.ctl" % bin_dir()
+        print ""
+        print "==How to run idea=="
+        print "cd %s" % self.dirname_out
+        print os.path.abspath("%s/../idea-2.5.1/idea" % bin_dir())
+        print "File > Load configuration > codonml.ctl"
+        print "It's actually really annoying.  So don't run idea."
 
 
 def main():
