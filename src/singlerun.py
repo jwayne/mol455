@@ -53,21 +53,21 @@ class SingleRun(object):
                 if inputs['aa_fasta']:
                     raise ValueError("Duplicate protein sequence files")
                 inputs['aa_fasta'] = fname_in
-            elif fname_part == "proteins.aln":
+            elif fname_in.endswith(".aa.aln"):
                 if inputs['prots_aln']:
                     raise ValueError("Duplicate protein alignment files")
                 inputs['prots_aln'] = fname_in
-            elif fname_in.endswith(".aln"):
+            elif fname_in.endswith(".codon.aln"):
                 if inputs['codons_aln']:
                     raise ValueError("Duplicate codon alignment files")
                 inputs['codons_aln'] = fname_in
-            elif fname_in.endswith("_tree.txt"):
+            elif fname_in.endswith("_phyml_tree.txt"):
                 if inputs['tree']:
                     raise ValueError("Duplicate tree files")
                 if inputs['boot_trees']:
                     raise ValueError("Do not provide both tree and bootstrap trees")
                 inputs['tree'] = fname_in
-            elif fname_in.endswith("_trees.txt"):
+            elif fname_in.endswith("_phyml_trees.txt"):
                 if inputs['boot_trees']:
                     raise ValueError("Duplicate bootstrap tree files")
                 if inputs['tree']:

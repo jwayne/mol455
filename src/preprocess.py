@@ -129,8 +129,13 @@ def run_clustalw2(fname_prot):
     sys.stderr.write("\nSTEP: run_clustalw2(%s)\n" % fname_prot)
     # Note: clustalw2 is assumed to have already been installed. We can change
     # this assumption by adding clustalw2 to bin/
-    fname_aln = ".".join(fname_prot.split(".")[:-1]) + ".aln"
+    fname_aln = "homologues.aa.aln"
     os.system("clustalw2 -INFILE=%s -OUTFILE=%s" % (fname_prot, fname_aln))
+    if '.' in os.path.split(fname_prot)[-1]:
+        fname_dnd = ".".join(fname_prot.split(".")[:-1]) + ".dnd"
+    else:
+        fname_dnd = fname_prot + ".dnd"
+    os.remove(fname_dnd)
     return fname_aln
 
 
@@ -177,19 +182,20 @@ def run_phyml(fname_aln, n_bootstrap):
         file of bootstrapped phylo trees (_boot_trees.txt)
     """
     sys.stderr.write("\nSTEP: run_phyml(%s, %s)\n" % (fname_aln, n_bootstrap))
-    fname_phy = ".".join(fname_aln.split(".")[:-1]) + ".phy"
+    fname_phy = "homologues.aa.phy"
     with open(fname_aln, "rU") as f_in:
         with open(fname_phy, "w") as f_out:
             SeqIO.convert(f_in, "clustal", f_out, "phylip-relaxed")
 
-    fname_tree = ".".join(fname_aln.split(".")[:-1]) + ".phy_phyml_tree.txt"
+    current_dir = os.getcwd()
+    fname_tree = fname_phy + "_phyml_tree.txt"
     if n_bootstrap > 1:
-        bootstrap_str = " -b %d" % n_bootstrap
-        fname_boot_trees = ".".join(fname_aln.split(".")[:-1]) + ".phy_phyml_boot_trees.txt"
+        bootstrap_str = "-b %d" % n_bootstrap
+        fname_boot_trees = fname_phy + "_phyml_boot_trees.txt"
     else:
         bootstrap_str = ""
         fname_boot_trees = None
-    os.system("%s/phyml -i %s -d aa%s" % (bin_dir(), fname_phy, bootstrap_str))
+    os.system("%s/phyml -i %s -d aa %s %s" % (bin_dir(), fname_phy, bootstrap_str, current_dir))
     return fname_tree, fname_boot_trees
 
 
