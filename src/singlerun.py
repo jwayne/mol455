@@ -183,11 +183,18 @@ class SingleRun(object):
 
 
     def process(self):
-        print "Run the following--"
+        print ""
+        print "Preprocessing completed"
+        print ""
+        print "==How to run codeml=="
         print "cd %s" % self.dirname_out
-        print "%s/../idea-2.5.1/idea" % bin_dir()
-        print "Then go to File > Load configuration > codonml.ctl"
-        print "I think."
+        print "%s/codeml codonml.ctl" % bin_dir()
+        print ""
+        print "==How to run idea=="
+        print "cd %s" % self.dirname_out
+        print os.path.abspath("%s/../idea-2.5.1/idea" % bin_dir())
+        print "File > Load configuration > codonml.ctl"
+        print "It's actually really annoying.  So don't run idea."
 
 
 def main():
