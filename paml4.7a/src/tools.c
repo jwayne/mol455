@@ -2914,9 +2914,9 @@ double QuantileBeta(double prob, double p, double q, double lnbeta)
       xinbta = tx;
       yprev = y;
    }
-   if(!PAML_RELEASE) 
+/*   if(!PAML_RELEASE) 
       printf("\nQuantileBeta(%.2f, %.5f, %.5f) = %.6e\t%d rounds\n", 
-         prob,p,q, (swap_tail ? 1. - xinbta : xinbta), niterations);
+         prob,p,q, (swap_tail ? 1. - xinbta : xinbta), niterations);*/
 
    L_converged:
    return (swap_tail ? 1. - xinbta : xinbta);

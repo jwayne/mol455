@@ -227,7 +227,7 @@ def convert_boottrees(fname_trees):
 
 
 CTL_TEMPLATE = os.path.join(os.path.dirname(__file__), "codonml_template.ctl")
-def make_ctl(fname_codon, fname_tree, ctl_template=None):
+def make_ctl(fname_codon, fname_tree, ctl_template=None, suffix=None):
     """
     Generate the PAML config file.
 
@@ -243,7 +243,12 @@ def make_ctl(fname_codon, fname_tree, ctl_template=None):
     if not ctl_template:
         ctl_template = CTL_TEMPLATE
     sys.stderr.write("\nSTEP: make_ctl(%s, %s)\n" % (fname_codon, fname_tree))
-    fname_ctl = "codonml.ctl"
+    if not suffix:
+        dirname_ctl = "codeml-main"
+    else:
+        dirname_ctl = "codeml%s" % suffix
+    os.mkdir(dirname_ctl)
+    fname_ctl = os.path.join(dirname_ctl, "codonml.ctl")
     wrote_seqfile = False
     wrote_treefile = False
     with open(fname_ctl, "w") as fw:
@@ -252,11 +257,15 @@ def make_ctl(fname_codon, fname_tree, ctl_template=None):
                 if line.strip().startswith("seqfile"):
                     if wrote_seqfile:
                         raise ValueError("Bad ctl template file; multiple seqfile lines")
+                    if not os.path.isabs(fname_codon):
+                        fname_codon = "../" + fname_codon
                     fw.write("seqfile = %s\n" % fname_codon)
                     wrote_seqfile = True
                 elif line.strip().startswith("treefile"):
                     if wrote_treefile:
                         raise ValueError("Bad ctl template file; multiple treefile lines")
+                    if not os.path.isabs(fname_tree):
+                        fname_tree = "../" + fname_tree
                     fw.write("treefile = %s\n" % fname_tree)
                     wrote_treefile = True
                 else:
