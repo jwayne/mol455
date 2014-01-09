@@ -78,7 +78,7 @@ class SingleRun(object):
                     raise ValueError("Duplicate ctl template files")
                 inputs['ctl_template'] = fname_in
             else:
-                raise NotImplementedError()
+                raise NotImplementedError("Input file format not recognized: %s" % fname_in)
 
         if bootstrap == AUTOMATIC:
             if inputs['tree']:

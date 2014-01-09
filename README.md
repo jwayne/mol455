@@ -1,5 +1,24 @@
-mol455 final project - codeml+
-======
+# MOL455 final project - codeml+
+
+Making site-based dN/dS analysis of protein sequences easier.
+
+
+# Getting started
+
+### Install dependencies:
+
+NumPy
+BioPython - biopython.org
+ClustalW2 - clustal.org
+
+### Run codeml+!
+
+```
+$ src/singlerun.py data/full_dataset.aa.fasta data/full_dataset.dna.fasta
+```
+
+
+
 
 # License
 
