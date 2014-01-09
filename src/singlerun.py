@@ -15,7 +15,7 @@ AUTOMATIC = "AUTOMATIC"
 
 class SingleRun(object):
 
-    def __init__(self, fnames_in, prot_id_in, dirname_out, n_bootstrap, analyze_bootstrap):
+    def __init__(self, fnames_in, prot_id_in, dirname_out, n_bootstrap, bootstrap):
         """
         Categorize input files and create the appropriate output directory,
         stored at `self.dirname_out`.
@@ -78,19 +78,20 @@ class SingleRun(object):
                     raise ValueError("Duplicate ctl template files")
                 inputs['ctl_template'] = fname_in
             else:
-                raise NotImplementedError()
+                raise NotImplementedError("Input file format not recognized: %s" % fname_in)
 
-        if analyze_bootstrap == AUTOMATIC:
+        if bootstrap == AUTOMATIC:
             if inputs['tree']:
-                self.analyze_bootstrap = False
+                self.bootstrap = False
             elif inputs['boot_trees']:
-                self.analyze_bootstrap = True
+                self.bootstrap = True
             else:
                 # If no tree provided, default to not analyzing bootstrap trees
-                self.analyze_bootstrap = False
-        elif analyze_bootstrap:
-            if n_bootstrap <= 1:
+                self.bootstrap = False
+        else:
+            if bootstrap and n_bootstrap <= 1:
                 raise ValueError("Cannot analyze bootstrap trees with n_bootstrap<=1")
+            self.bootstrap = bootstrap
         self.n_bootstrap = n_bootstrap
 
         # TODO: name dirname_out after first protein sequence in file
@@ -100,7 +101,7 @@ class SingleRun(object):
                 prefix = prot_id_in
             else:
                 tail = os.path.split(fnames_in[0])[-1]
-                prefix = ".".join(tail.split(".")[:-1])
+                prefix = tail.split(".")[0]
             dirname_out = "%s-%s" % (prefix, ts_str())
             dirname_out = os.path.abspath(dirname_out)
             if os.path.exists(dirname_out):
@@ -162,9 +163,8 @@ class SingleRun(object):
                 _, self.inputs['boot_trees'] = run_phyml(self.inputs['prots_aln'], self.n_bootstrap)
 
         _check_codons_aln()
-        if not self.analyze_bootstrap:
+        if not self.bootstrap:
             _check_tree()
-            self.bootstrap = False
             # Get rid of confidences in tree
             fname_tree = convert_maintree(self.inputs['tree'])
             # Generate ctl file.
@@ -172,29 +172,41 @@ class SingleRun(object):
                     self.inputs["ctl_template"])
         else:
             _check_boot_trees()
-            self.bootstrap = True
             # Split up bootstrap trees
             fname_trees = convert_boottrees(self.inputs['boot_trees'])
             # Generate ctl file.
             self.ctls = []
-            for fname_tree in fname_trees:
+            for i, fname_tree in enumerate(fname_trees):
                 self.ctls.append(make_ctl(self.inputs['codons_aln'], fname_tree,
-                        self.inputs["ctl_template"]))
+                        self.inputs["ctl_template"], suffix="-%d"%i))
 
 
     def process(self):
         print ""
         print "Preprocessing completed"
         print ""
-        print "==How to run codeml=="
-        print "cd %s" % self.dirname_out
-        print "%s/codeml codonml.ctl" % bin_dir()
-        print ""
         print "==How to run idea=="
         print "cd %s" % self.dirname_out
         print os.path.abspath("%s/../idea-2.5.1/idea" % bin_dir())
         print "File > Load configuration > codonml.ctl"
         print "It's actually really annoying.  So don't run idea."
+        print ""
+        print "==How to run codeml=="
+        print "cd %s" % self.dirname_out
+        if self.bootstrap:
+            for i, ctl in enumerate(self.ctls):
+                print "mkdir codeml-%d; cd codeml-%d" % (i, i)
+                if not os.path.isabs(ctl):
+                    ctl = "../" + ctl
+                print "%s/codeml %s > out.codeml-%d 2>&1 &" % (bin_dir(), ctl, i)
+                print "cd .."
+        else:
+            print "mkdir codeml-main; cd codeml-main"
+            ctl = self.ctl
+            if not os.path.isabs(ctl):
+                ctl = "../" + ctl
+            print "%s/codeml %s > out.codeml-main 2>&1 &" % (bin_dir(), ctl)
+            print "cd .."
 
 
 def main():
@@ -208,12 +220,12 @@ def main():
         help="output directory. Defaults to new directory in folder of first positional argument")
     parser.add_argument('-n', dest='n_bootstrap', type=int, default=1,
         help="number of bootstrapped trees. Defaults to 1")
-    parser.add_argument('-b', dest='analyze_bootstrap', action='store_true', default=AUTOMATIC,
+    parser.add_argument('-b', dest='bootstrap', action='store_true', default=AUTOMATIC,
         help="run codeML on all bootstrap trees, and analyze the resulting dnds distribution per site")
     args = parser.parse_args()
     
     singlerun = SingleRun(args.fnames_in, args.prot_id, args.dirname_out,
-            args.n_bootstrap, args.analyze_bootstrap)
+            args.n_bootstrap, args.bootstrap)
     singlerun.preprocess()
     singlerun.process()
 
