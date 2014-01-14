@@ -154,7 +154,7 @@ def postprocess(fn_rst):
                     model_results.set_lnL(lnL)
                     break
                 count += 1
-                if count > 30:
+                if count > 100:
                     raise ValueError("Read too many lines without finding lnL.")
                 line = f.readline()
             if not line:
@@ -167,7 +167,7 @@ def postprocess(fn_rst):
 def draw_bars_permodel(all_results):
     n_models = len(all_results)
     n_sites = len(all_results.values()[0].probs)
-    plt.figure(1, figsize=(n_sites/10,3*n_models))
+    plt.figure(figsize=(n_sites/10,3*n_models))
     cmap = mpl.cm.PiYG
 
     for i, model_id in enumerate(sorted(all_results.keys())):
@@ -196,12 +196,13 @@ def draw_bars_permodel(all_results):
         labels = reversed(["w = %.3f" % w for w in model_results.ws])
         plt.legend(bars, labels, prop={'size':10})
     plt.tight_layout()
+    plt.show(block=False)
 
 
 def draw_ev(all_results):
     n_models = len(all_results)
     n_sites = len(all_results.values()[0].probs)
-    plt.figure(1, figsize=(n_sites/10,3))
+    plt.figure(figsize=(n_sites/10,3))
 
     plt.subplot("111")
     width = 1
@@ -217,6 +218,7 @@ def draw_ev(all_results):
     labels = ["Model %d" % mid for mid in model_ids]
     plt.legend(labels, prop={'size':10})
     plt.tight_layout()
+    plt.show(block=False)
 
 
 def draw_ev_bootstrap(allall_results):
@@ -224,7 +226,7 @@ def draw_ev_bootstrap(allall_results):
     model_ids = sorted(allall_results[0].keys())
     n_models = len(model_ids)
     n_sites = len(allall_results[0].values()[0].probs)
-    plt.figure(1, figsize=(n_sites/10,3*n_models))
+    plt.figure(figsize=(n_sites/10,3*n_models))
 
     for i, model_id in enumerate(model_ids):
         plt.subplot("%d1%d" % (n_models, i+1))
@@ -242,6 +244,7 @@ def draw_ev_bootstrap(allall_results):
         else:
             plt.title("Model unknown")
     plt.tight_layout()
+    plt.show(block=False)
 
 
 if __name__ == "__main__":
@@ -254,7 +257,7 @@ if __name__ == "__main__":
     if len(allall_results) == 1:
         draw_bars_permodel(all_results)
         draw_ev(all_results)
-        plt.show()
     else:
         draw_ev_bootstrap(allall_results)
-        plt.show()
+    import ipdb
+    ipdb.set_trace()
