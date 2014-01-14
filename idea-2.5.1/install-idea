@@ -1,1 +1,0 @@
-`which bash` `echo $0 | sed s'/\/install-idea$//'`/install-idea.bash
