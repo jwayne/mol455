@@ -7,14 +7,18 @@ Making site-based dN/dS analysis of protein sequences easier.
 
 ### Install dependencies:
 
-NumPy
-BioPython - biopython.org
-ClustalW2 - clustal.org
+* NumPy
+
+* Matplotlib
+
+* BioPython - biopython.org
 
 ### Run codeml+!
 
 ```
-$ src/singlerun.py data/full_dataset.aa.fasta data/full_dataset.dna.fasta
+./codemlp.py -i P03485
+
+./codemlp.py data/full_dataset.aa.fasta data/full_dataset.dna.fasta
 ```
 
 
